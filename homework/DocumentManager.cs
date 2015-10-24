@@ -209,5 +209,10 @@ namespace homework
                 }
             }
         }
+
+        private void DocumentManager_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            dbm.closeDbConn();
+        }
     }
 }
