@@ -30,13 +30,13 @@ namespace homework
 
             if (!dbExisted)
             {
-                // Table name: fieldnames
+                // Table name: field names
                 // files: id, title, author, year, doi, favorite, vdirs_id, type, note, location, added, rread
                 // file_tag: files_id, tags_id
                 // tags: id, name
                 // vdirs: id, name, subdir_id
                 // settings: id, name, value
-                // Use http://sqlitebrowser.org/ program to watch how it looks like the db.
+                // Use http://sqlitebrowser.org/ program to watch how it looks like the db strukture.
 
                 SQLiteCommand sqlc = new SQLiteCommand("CREATE TABLE 'files' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE, 'title' VARCHAR NOT NULL, 'author' VARCHAR NULL DEFAULT NULL, 'year' INTEGER NULL DEFAULT NULL, 'DOI' VARCHAR NULL DEFAULT NULL, 'vdirs_id' INTEGER NULL DEFAULT NULL REFERENCES vdirs(id) ON UPDATE RESTRICT ON DELETE RESTRICT, 'favorite' BOOL DEFAULT 0, 'type' VARCHAR NOT NULL, 'note' VARCHAR NULL DEFAULT NULL, 'location' VARCHAR NOT NULL, 'added' VARCHAR DEFAULT CURRENT_TIMESTAMP, 'rread' VARCHAR NULL DEFAULT NULL)", dbConnection);
                 sqlc.ExecuteNonQuery();
@@ -253,6 +253,36 @@ namespace homework
                     transaction.Commit();
                 }
             }
+        }
+
+        // Search a string everywhere.
+        public List<Files> simpleSearch(string searchedString)
+        {
+            List<Files> files = new List<Files>();
+
+            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM files WHERE title LIKE $searchString OR author LIKE $searchString OR year LIKE $searchString OR doi LIKE $searchString OR favorite LIKE $searchString OR vdirs_id LIKE $searchString OR type LIKE $searchString OR note LIKE $searchString OR location LIKE $searchString OR added LIKE $searchString OR rread LIKE $searchString", dbConnection);
+            sqlc.Parameters.AddWithValue("$searchString", "%" + searchedString + "%");
+            SQLiteDataReader sqldr = sqlc.ExecuteReader();
+            while (sqldr.Read())
+            {
+                // Do not use sqldr["id"].toString() because it won't work and kill the program!
+                files.Add(new Files(
+                    Convert.ToInt32(sqldr["id"]),
+                    Convert.ToString(sqldr["title"]),
+                    Convert.ToString(sqldr["author"]),
+                    Convert.ToString(sqldr["year"]),
+                    Convert.ToString(sqldr["doi"]),
+                    Convert.ToString(sqldr["vdirs_id"]),
+                    Convert.ToBoolean(sqldr["favorite"]),
+                    Convert.ToString(sqldr["type"]),
+                    Convert.ToString(sqldr["note"]),
+                    Convert.ToString(sqldr["location"]),
+                    Convert.ToString(sqldr["added"]),
+                    Convert.ToString(sqldr["rread"])
+                    ));
+            }
+
+            return files;
         }
     }
 }

@@ -214,5 +214,36 @@ namespace homework
         {
             dbm.closeDbConn();
         }
+
+        private void buttonSimpleSearch_Click(object sender, EventArgs e)
+        {
+            List<Files> files = dbm.simpleSearch(textBoxSimpleSearch.Text);
+
+            if (files != null)
+            {
+                listViewDocs.Items.Clear();
+
+                foreach (Files fileItem in files)
+                {
+                    ListViewItem lvi = new ListViewItem(fileItem.Favorite.ToString());
+                    lvi.SubItems.Add(fileItem.Type);
+                    lvi.SubItems.Add(fileItem.Title);
+                    lvi.SubItems.Add(fileItem.Author);
+                    lvi.SubItems.Add(fileItem.Year);
+                    lvi.SubItems.Add(fileItem.Doi);
+                    lvi.SubItems.Add(fileItem.Added);
+
+                    lvi.Tag = fileItem;
+
+                    listViewDocs.Items.Add(lvi);
+                }
+
+                treeViewDirs.SelectedNode = null;
+            }
+            else
+            {
+                MessageBox.Show("No resoults found!");
+            }
+        }
     }
 }
