@@ -14,6 +14,7 @@ namespace homework
         private string dbName;
         private SQLiteConnection dbConnection;
 
+        // Constructor, create automaticalli a connection to the definied db.
         public dbManager(string dbName)
         {
             this.dbName = dbName;
@@ -260,7 +261,22 @@ namespace homework
         {
             List<Files> files = new List<Files>();
 
-            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM files WHERE title LIKE $searchString OR author LIKE $searchString OR year LIKE $searchString OR doi LIKE $searchString OR favorite LIKE $searchString OR vdirs_id LIKE $searchString OR type LIKE $searchString OR note LIKE $searchString OR location LIKE $searchString OR added LIKE $searchString OR rread LIKE $searchString", dbConnection);
+            SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f 
+	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
+	                WHERE f.'title' LIKE $searchString OR 
+	                f.'author' LIKE $searchString OR 
+	                f.'year' LIKE $searchString OR 
+	                f.'doi' LIKE $searchString OR 
+	                f.'favorite' LIKE $searchString OR
+	                f.'vdirs_id' LIKE $searchString OR 
+	                f.'type' LIKE $searchString OR 
+	                f.'note' LIKE $searchString OR 
+	                f.'location' LIKE $searchString OR 
+	                f.'added' LIKE $searchString OR 
+	                f.'rread' LIKE $searchString OR
+	                t.'name' LIKE $searchString
+	                GROUP BY f.title", dbConnection);
             sqlc.Parameters.AddWithValue("$searchString", "%" + searchedString + "%");
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
