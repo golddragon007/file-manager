@@ -149,7 +149,7 @@ namespace homework
                 textBoxAuthor.Text = selectedFiles.Author;
                 textBoxDOI.Text = selectedFiles.Doi;
                 textBoxNotes.Text = selectedFiles.Note;
-                textBoxTags.Text = selectedFiles.Tag;
+                textBoxTags.Text = selectedFiles.Tags;
                 textBoxTitle.Text = selectedFiles.Title;
                 textBoxYear.Text = selectedFiles.Year;
                 checkBoxFavourite.Checked = selectedFiles.Favorite;

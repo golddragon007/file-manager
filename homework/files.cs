@@ -106,12 +106,12 @@ namespace homework
             set { rread = value; }
         }
 
-        private string tag;
+        private string tags;
 
-        public string Tag
+        public string Tags
         {
-            get { return tag; }
-            set { tag = value; }
+            get { return tags; }
+            set { tags = value; }
         }
 
         public string Size
@@ -196,7 +196,7 @@ namespace homework
         }
 
 
-        public Files(int id, string title, string author, string year, string doi, string vdir, bool favorite, string type, string note, string location, string added, string rread)
+        public Files(int id, string title, string author, string year, string doi, string vdir, bool favorite, string type, string tags, string note, string location, string added, string rread)
         {
             this.added = added;
             this.author = author;
@@ -204,6 +204,7 @@ namespace homework
             this.favorite = favorite;
             this.id = id;
             this.location = location;
+            this.tags = tags;
             this.note = note;
             this.rread = rread;
             this.title = title;
