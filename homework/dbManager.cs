@@ -329,7 +329,7 @@ namespace homework
 
             List<Files> files = new List<Files>();
 
-            SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET rread = $rread WHERE id >= $id", dbConnection);
+            SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET rread = $rread WHERE id = $id", dbConnection);
             sqlc.Parameters.AddWithValue("$rread", dt.ToString("yyyy-MM-dd HH:mm:ss"));
             sqlc.Parameters.AddWithValue("$id", id);
             sqlc.ExecuteNonQuery();
