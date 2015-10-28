@@ -35,7 +35,7 @@ namespace homework
                 // files: id, title, author, year, doi, favorite, vdirs_id, type, note, location, added, rread
                 // file_tag: files_id, tags_id
                 // tags: id, name
-                // vdirs: id, name, subdir_id
+                // vdirs: id, name, parentdir_id
                 // settings: id, name, value
                 // Use http://sqlitebrowser.org/ program to watch how it looks like the db strukture.
 
@@ -45,7 +45,7 @@ namespace homework
                 sqlc.ExecuteNonQuery();
                 sqlc = new SQLiteCommand("CREATE TABLE 'file_tag' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE, 'files_id' INTEGER NOT NULL REFERENCES files(id) ON UPDATE RESTRICT ON DELETE RESTRICT, 'tags_id' INTEGER NOT NULL REFERENCES tags(id) ON UPDATE RESTRICT ON DELETE RESTRICT)", dbConnection);
                 sqlc.ExecuteNonQuery();
-                sqlc = new SQLiteCommand("CREATE TABLE 'vdirs' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL  UNIQUE, 'name' VARCHAR NOT NULL, 'subdir_id' INTEGER NULL DEFAULT NULL REFERENCES vdirs(id) ON UPDATE RESTRICT ON DELETE RESTRICT)", dbConnection);
+                sqlc = new SQLiteCommand("CREATE TABLE 'vdirs' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL  UNIQUE, 'name' VARCHAR NOT NULL, 'parentdir_id' INTEGER NULL DEFAULT NULL REFERENCES vdirs(id) ON UPDATE RESTRICT ON DELETE RESTRICT)", dbConnection);
                 sqlc.ExecuteNonQuery();
                 sqlc = new SQLiteCommand("CREATE TABLE 'settings' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL  UNIQUE, 'name' VARCHAR NOT NULL, 'value' VARCHAR NOT NULL)", dbConnection);
                 sqlc.ExecuteNonQuery();
