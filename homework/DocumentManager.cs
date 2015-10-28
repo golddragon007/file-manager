@@ -184,7 +184,8 @@ namespace homework
             if (listViewDocs.SelectedItems.Count == 1)
             {
                 Files selectedFiles = (Files)listViewDocs.SelectedItems[0].Tag;
-                System.Diagnostics.Process.Start(selectedFiles.Location); 
+                System.Diagnostics.Process.Start(selectedFiles.Location);
+                dbm.setReceantlyReadNow(selectedFiles.Id);
             }
         }
 
@@ -196,6 +197,7 @@ namespace homework
                 {
                     Files selectedFiles = (Files)selItem.Tag;
                     System.Diagnostics.Process.Start(selectedFiles.Location);
+                    dbm.setReceantlyReadNow(selectedFiles.Id);
                 }
             }
             else if (listViewDocs.SelectedItems.Count >= 10) {
@@ -205,6 +207,7 @@ namespace homework
                     {
                         Files selectedFiles = (Files)selItem.Tag;
                         System.Diagnostics.Process.Start(selectedFiles.Location);
+                        dbm.setReceantlyReadNow(selectedFiles.Id);
                     }
                 }
             }

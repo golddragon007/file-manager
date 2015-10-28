@@ -75,7 +75,8 @@ namespace homework
 
             SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
 	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
-	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'", dbConnection);
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
+	                GROUP BY f.title", dbConnection);
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
@@ -110,7 +111,9 @@ namespace homework
 
             SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
 	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
-	                LEFT JOIN tags t ON ft.'tags_id' = t.'id' WHERE f.added >= $added", dbConnection);
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
+                    WHERE f.added >= $added
+	                GROUP BY f.title", dbConnection);
             sqlc.Parameters.AddWithValue("$added", dt.ToString("yyyy-MM-dd HH:mm:ss"));
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
@@ -146,7 +149,9 @@ namespace homework
 
             SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
 	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
-	                LEFT JOIN tags t ON ft.'tags_id' = t.'id' WHERE f.rread >= $rread", dbConnection);
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
+                    WHERE f.rread >= $rread
+	                GROUP BY f.title", dbConnection);
             sqlc.Parameters.AddWithValue("$rread", dt.ToString("yyyy-MM-dd HH:mm:ss"));
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
@@ -179,7 +184,9 @@ namespace homework
 
             SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
 	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
-	                LEFT JOIN tags t ON ft.'tags_id' = t.'id' WHERE f.favorite = 1", dbConnection);
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
+                    WHERE f.favorite = 1
+	                GROUP BY f.title", dbConnection);
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
@@ -312,6 +319,20 @@ namespace homework
             }
 
             return files;
+        }
+
+        // Set receantly read parameter.
+        public void setReceantlyReadNow(int id)
+        {
+            // Actual date.
+            DateTime dt = DateTime.Now;
+
+            List<Files> files = new List<Files>();
+
+            SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET rread = $rread WHERE id >= $id", dbConnection);
+            sqlc.Parameters.AddWithValue("$rread", dt.ToString("yyyy-MM-dd HH:mm:ss"));
+            sqlc.Parameters.AddWithValue("$id", id);
+            sqlc.ExecuteNonQuery();
         }
     }
 }
