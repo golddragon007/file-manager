@@ -27,11 +27,53 @@ namespace homework
 
             treeViewDirs.SelectedNode = treeViewDirs.Nodes[0];
             listViewRefresh();
+            VDirs allVDirs = dbm.getVDirs();
+            generateCustomVDirs(allVDirs);
+        }
+
+        // Build up the Custom dirs.
+        private void generateCustomVDirs(VDirs actualPack)
+        {
+            treeViewDirs.Nodes[6].Nodes.Clear();
+            foreach (VDirs actualItem in actualPack.Subdirs)
+            {
+                TreeNode tn = new TreeNode(actualItem.Name, generateCustomVDirsRecursive(actualItem));
+                tn.Tag = actualItem;
+                treeViewDirs.Nodes[6].Nodes.Add(tn);
+            }
+        }
+
+        // Build up the Custom dirs. (children)
+        private TreeNode[] generateCustomVDirsRecursive(VDirs actualPack)
+        {
+            if (actualPack != null)
+            {
+                TreeNode[] tn = new TreeNode[actualPack.Subdirs.Count];
+                int actIndex = 0;
+                foreach (VDirs actualItem in actualPack.Subdirs)
+                {
+                    TreeNode tnsub = new TreeNode(actualItem.Name, generateCustomVDirsRecursive(actualItem));
+                    tnsub.Tag = actualItem;
+                    tn[actIndex] = tnsub;
+                    actIndex++;
+                }
+                return tn; 
+            }
+            return null;
         }
 
         private void treeViewDirs_AfterSelect(object sender, TreeViewEventArgs e)
         {
             listViewRefresh();
+        }
+
+        private TreeNode FindRootNode(TreeNode treeNode)
+        {
+            while (treeNode.Parent != null)
+            {
+                treeNode = treeNode.Parent;
+            }
+            return treeNode;
         }
 
         private void listViewRefresh()
@@ -41,20 +83,23 @@ namespace homework
             if (selected != null)
             {
                 List<Files> files = null;
+                TreeNode rtn = FindRootNode(selected);
 
-                if (selected.Level.ToString().Equals("0") && selected.Index.ToString().Equals("0"))
+                MessageBox.Show(selected.FullPath + " > " + rtn.Index.ToString() + " : " + selected.Level.ToString() + " : " + selected.Index.ToString());
+
+                if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("0"))
                 {
                     files = dbm.getAllFiles();
                 }
-                else if (selected.Level.ToString().Equals("0") && selected.Index.ToString().Equals("1"))
+                else if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("1"))
                 {
                     files = dbm.getAllFilesReceantlyAdded();
                 }
-                else if (selected.Level.ToString().Equals("0") && selected.Index.ToString().Equals("2"))
+                else if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("2"))
                 {
                     files = dbm.getAllFilesReceantlyRead();
                 }
-                else if (selected.Level.ToString().Equals("0") && selected.Index.ToString().Equals("3"))
+                else if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("3"))
                 {
                     files = dbm.getAllFilesFavorite();
                 }

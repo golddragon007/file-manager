@@ -334,5 +334,117 @@ namespace homework
             sqlc.Parameters.AddWithValue("$id", id);
             sqlc.ExecuteNonQuery();
         }
+
+        // Returns a VDir tree from the db.
+        public VDirs getVDirs()
+        {
+            VDirs returnVdir = new VDirs(-1, "root");
+
+            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM vdirs WHERE parentdir_id IS NULL", dbConnection);
+            SQLiteDataReader sqldr = sqlc.ExecuteReader();
+            while (sqldr.Read())
+            {
+                returnVdir.addNewChild(getVDirsById(Convert.ToInt32(sqldr["id"])));
+            }
+
+            return returnVdir;
+        }
+
+        // Get VDirs by main ID.
+        public VDirs getVDirsById(int id)
+        {
+            VDirs returnVdir = null;
+
+            if (id > 0)
+            {
+                List<VDirs> tmpVdirs = new List<VDirs>();
+                int firstId = -2;
+
+                SQLiteCommand sqlc = new SQLiteCommand(@"WITH vdirsCTE AS (
+                        SELECT *,0 AS steps
+                        FROM vdirs
+                        WHERE id = $id
+    
+                        UNION ALL
+  
+                        SELECT mgr.*, usr.steps + 1 AS steps
+                        FROM vdirsCTE AS usr
+                        INNER JOIN vdirs AS mgr
+                            ON usr.id = mgr.parentdir_id
+                    )
+                    SELECT * FROM vdirsCTE AS u;", dbConnection);
+                sqlc.Parameters.AddWithValue("$id", id);
+                SQLiteDataReader sqldr = sqlc.ExecuteReader();
+                while (sqldr.Read())
+                {
+                    tmpVdirs.Add(new VDirs(
+                                Convert.ToInt32(sqldr["id"]),
+                                Convert.ToString(sqldr["name"]),
+                                (sqldr["parentdir_id"] == System.DBNull.Value ? -1 : Convert.ToInt32(sqldr["parentdir_id"]))
+                            ));
+                    if (firstId == -2)
+	                {
+                        firstId = (sqldr["parentdir_id"] == System.DBNull.Value ? -1 : Convert.ToInt32(sqldr["parentdir_id"]));
+	                }
+                }
+
+                List<int> idEnd = new List<int>();
+                sqlc = new SQLiteCommand(@"SELECT a.* FROM vdirs a WHERE not EXISTS(SELECT 1 FROM vdirs b WHERE a.id=b.parentdir_id)", dbConnection);
+                sqldr = sqlc.ExecuteReader();
+                while (sqldr.Read())
+                {
+                    idEnd.Add(Convert.ToInt32(sqldr["id"]));
+                }
+
+                returnVdir = recursiveBuildVDirs(ref tmpVdirs, ref idEnd, firstId);
+            }
+                
+            return returnVdir;
+        }
+
+        // Generate tree object in recursive mode.
+        private VDirs recursiveBuildVDirs(ref List<VDirs> treeList, ref List<int> idEnd, int actualId)
+        {
+            int index = idEnd.FindIndex(a => a == actualId);
+            if (treeList.Count == 0 || index > 0)
+            {
+                return null;
+            }
+            else
+            {
+                VDirs tmp = null;
+                VDirs tmp2 = null;
+
+                foreach (VDirs item in treeList)
+                {
+                    if (item.ParentId == actualId)
+                    {
+                        tmp = new VDirs(item.Id, item.Name, item.ParentId);
+                        tmp2 = item;
+                        break;
+                    }
+                }
+
+                if (tmp2 != null)
+                {
+                    treeList.Remove(tmp2);
+                }
+
+                if (tmp != null)
+                {
+                    VDirs tmp3 = null;
+                    do
+                    {
+                        tmp3 = recursiveBuildVDirs(ref treeList, ref idEnd, tmp.Id);
+                        if (tmp3 != null)
+                        {
+                            tmp.addNewChild(tmp3);
+                        }
+                    } while (tmp3 != null);
+                }
+
+                return tmp;
+            }
+        }
     }
 }

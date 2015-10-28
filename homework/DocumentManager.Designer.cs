@@ -35,13 +35,7 @@
             System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Favorites");
             System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Author(s)");
             System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Unsorted");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Folder3");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Folder2", new System.Windows.Forms.TreeNode[] {
-            treeNode7});
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Folder4");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Custom Directories", new System.Windows.Forms.TreeNode[] {
-            treeNode8,
-            treeNode9});
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Custom Directories");
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addDictionaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -218,14 +212,8 @@
             treeNode5.Text = "Author(s)";
             treeNode6.Name = "Unsorted";
             treeNode6.Text = "Unsorted";
-            treeNode7.Name = "Folder3";
-            treeNode7.Text = "Folder3";
-            treeNode8.Name = "Folder2";
-            treeNode8.Text = "Folder2";
-            treeNode9.Name = "Folder4";
-            treeNode9.Text = "Folder4";
-            treeNode10.Name = "CustomDirs";
-            treeNode10.Text = "Custom Directories";
+            treeNode7.Name = "CustomDirs";
+            treeNode7.Text = "Custom Directories";
             this.treeViewDirs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1,
             treeNode2,
@@ -233,7 +221,7 @@
             treeNode4,
             treeNode5,
             treeNode6,
-            treeNode10});
+            treeNode7});
             this.treeViewDirs.Size = new System.Drawing.Size(208, 377);
             this.treeViewDirs.TabIndex = 1;
             this.treeViewDirs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewDirs_AfterSelect);
