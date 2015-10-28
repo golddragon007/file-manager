@@ -73,7 +73,9 @@ namespace homework
         {
             List<Files> files = new List<Files>();
 
-            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM files", dbConnection);
+            SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
+	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'", dbConnection);
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
@@ -105,7 +107,9 @@ namespace homework
 
             List<Files> files = new List<Files>();
 
-            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM files WHERE added >= $added", dbConnection);
+            SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
+	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id' WHERE added >= $added", dbConnection);
             sqlc.Parameters.AddWithValue("$added", dt.ToString("yyyy-MM-dd HH:mm:ss"));
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
@@ -138,7 +142,9 @@ namespace homework
 
             List<Files> files = new List<Files>();
 
-            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM files WHERE rread >= $rread", dbConnection);
+            SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
+	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id' WHERE rread >= $rread", dbConnection);
             sqlc.Parameters.AddWithValue("$rread", dt.ToString("yyyy-MM-dd HH:mm:ss"));
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
@@ -168,7 +174,9 @@ namespace homework
         {
             List<Files> files = new List<Files>();
 
-            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM files WHERE favorite = 1", dbConnection);
+            SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
+	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id' WHERE f.favorite = 1", dbConnection);
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
@@ -256,7 +264,7 @@ namespace homework
             }
         }
 
-        // Search a string everywhere.
+        // Search a string everywhere except virtual dirs string.
         public List<Files> simpleSearch(string searchedString)
         {
             List<Files> files = new List<Files>();
