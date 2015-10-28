@@ -109,7 +109,7 @@ namespace homework
 
             SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
 	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
-	                LEFT JOIN tags t ON ft.'tags_id' = t.'id' WHERE added >= $added", dbConnection);
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id' WHERE f.added >= $added", dbConnection);
             sqlc.Parameters.AddWithValue("$added", dt.ToString("yyyy-MM-dd HH:mm:ss"));
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
@@ -144,7 +144,7 @@ namespace homework
 
             SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
 	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
-	                LEFT JOIN tags t ON ft.'tags_id' = t.'id' WHERE rread >= $rread", dbConnection);
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id' WHERE f.rread >= $rread", dbConnection);
             sqlc.Parameters.AddWithValue("$rread", dt.ToString("yyyy-MM-dd HH:mm:ss"));
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
