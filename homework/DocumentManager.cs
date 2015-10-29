@@ -324,5 +324,74 @@ namespace homework
                 generateCustomVDirs();
             }
         }
+
+        private void treeViewDirs_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // Select the clicked node.
+                treeViewDirs.SelectedNode = treeViewDirs.GetNodeAt(e.X, e.Y);
+
+                if (treeViewDirs.SelectedNode != null)
+                {
+                    TreeNode rtn = FindRootNode(treeViewDirs.SelectedNode);
+
+                    if (treeViewDirs.SelectedNode.Level == 0 || rtn.Index == 4)
+                    {
+                        // Disabling all dir function on root items.
+                        addNewDirToolStripMenuItem.Enabled = false;
+                        moveDirToolStripMenuItem.Enabled = false;
+                        deleteDirToolStripMenuItem.Enabled = false;
+                        contextMenuStripDirs.Show(treeViewDirs, e.Location);
+                    }
+                    else
+                    {
+                        // Enabling all dir functions on all non-root items.
+                        addNewDirToolStripMenuItem.Enabled = true;
+                        moveDirToolStripMenuItem.Enabled = true;
+                        deleteDirToolStripMenuItem.Enabled = true;
+                        contextMenuStripDirs.Show(treeViewDirs, e.Location);
+                    }
+                }
+            } 
+        }
+
+        private void addNewDirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<VDirs> fullPaths = new List<VDirs>();
+
+            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[6].Text, -1, treeViewDirs.Nodes[6].FullPath));
+            getAllFullPath(treeViewDirs.Nodes[6], ref fullPaths);
+
+            VDirs vds = (VDirs)treeViewDirs.SelectedNode.Tag;
+            vds.FullPath = treeViewDirs.SelectedNode.FullPath;
+
+            NewVDir nvdw = new NewVDir(fullPaths.ToArray(), vds);
+            if (nvdw.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                dbm.addVdirs(nvdw.MainID, nvdw.NewDirName);
+
+                generateCustomVDirs();
+            }
+        }
+
+        private void moveDirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<VDirs> fullPaths = new List<VDirs>();
+
+            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[6].Text, -1, treeViewDirs.Nodes[6].FullPath));
+            getAllFullPath(treeViewDirs.Nodes[6], ref fullPaths);
+
+            VDirs vds = (VDirs)treeViewDirs.SelectedNode.Tag;
+            vds.FullPath = treeViewDirs.SelectedNode.FullPath;
+
+            MoveVDirs mvdw = new MoveVDirs(fullPaths.ToArray(), vds.FullPath);
+            if (mvdw.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                dbm.moveVdirs(vds.Id, mvdw.NewMainId);
+
+                generateCustomVDirs();
+            }
+        }
     }
 }

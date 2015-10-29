@@ -34,6 +34,14 @@ namespace homework
             comboBoxMainDir.SelectedIndex = 0;
         }
 
+        public NewVDir(VDirs[] pathNames, VDirs vds)
+        {
+            InitializeComponent();
+
+            comboBoxMainDir.Items.AddRange(pathNames);
+            comboBoxMainDir.SelectedItem = vds;
+        }
+
         private void buttonCreate_Click(object sender, EventArgs e)
         {
             if (!textBoxNewDirName.Text.Equals(""))

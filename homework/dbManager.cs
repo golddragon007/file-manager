@@ -454,5 +454,13 @@ namespace homework
             sqlc.Parameters.AddWithValue("$parentdir_id", (mainID == -1 ? null : mainID.ToString()));
             sqlc.ExecuteNonQuery();
         }
+
+        public void moveVdirs(int whichId, int newSubId)
+        {
+            SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE vdirs SET parentdir_id = $parentdir_id WHERE id = $id", dbConnection);
+            sqlc.Parameters.AddWithValue("$id", whichId);
+            sqlc.Parameters.AddWithValue("$parentdir_id", (newSubId == -1 ? null : newSubId.ToString()));
+            sqlc.ExecuteNonQuery();
+        }
     }
 }
