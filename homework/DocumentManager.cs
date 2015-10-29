@@ -162,6 +162,12 @@ namespace homework
             {
                 if (listViewDocs.FocusedItem.Bounds.Contains(e.Location) == true)
                 {
+                    if (listViewDocs.SelectedItems[0] != null)
+                    {
+                        Files f = (Files)listViewDocs.SelectedItems[0].Tag;
+                        int index = contextMenuStripDocList.Items.IndexOfKey("addToFavoriteToolStripMenuItem");
+                        ((ToolStripMenuItem)contextMenuStripDocList.Items[index]).Checked = f.Favorite;
+                    }
                     contextMenuStripDocList.Show(Cursor.Position);
                 }
             } 
@@ -423,6 +429,15 @@ namespace homework
         private void colapseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             treeViewDirs.CollapseAll();
+        }
+
+        private void addToFavoriteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listViewDocs.SelectedItems)
+            {
+                dbm.toggleToFavorite(((Files)item.Tag).Id, !addToFavoriteToolStripMenuItem.Checked);
+            }
+            listViewRefresh();
         }
     }
 }

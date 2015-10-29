@@ -447,6 +447,7 @@ namespace homework
             }
         }
 
+        // Add new vdir the the selected place.
         public void addVdirs(int mainID, string newDirName)
         {
             SQLiteCommand sqlc = new SQLiteCommand(@"INSERT INTO vdirs (name, parentdir_id) VALUES ($name, $parentdir_id)", dbConnection);
@@ -455,6 +456,7 @@ namespace homework
             sqlc.ExecuteNonQuery();
         }
 
+        // Moves a vdir into another.
         public void moveVdirs(int whichId, int newSubId)
         {
             SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE vdirs SET parentdir_id = $parentdir_id WHERE id = $id", dbConnection);
@@ -463,6 +465,7 @@ namespace homework
             sqlc.ExecuteNonQuery();
         }
 
+        // Remove selected vdir and his all child.
         public void removeVdirs(int removeableId)
         {
             using (var transaction = dbConnection.BeginTransaction())
@@ -496,9 +499,19 @@ namespace homework
             }
         }
 
+        // Removes all vdirs.
         public void removeAllVdirs()
         {
             SQLiteCommand sqlc = new SQLiteCommand(@"DELETE FROM vdirs;", dbConnection);
+            sqlc.ExecuteNonQuery();
+        }
+
+        // Set file to favorite or not.
+        public void toggleToFavorite(int id, bool isFavorite)
+        {
+            SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET favorite = $favorite WHERE id = $id", dbConnection);
+            sqlc.Parameters.AddWithValue("$id", id);
+            sqlc.Parameters.AddWithValue("$favorite", isFavorite);
             sqlc.ExecuteNonQuery();
         }
     }
