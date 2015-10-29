@@ -68,6 +68,12 @@
       <DependentUpon>DocumentManager.cs</DependentUpon>
     </Compile>
     <Compile Include="Files.cs" />
+    <Compile Include="MoveFilesToDir.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MoveFilesToDir.Designer.cs">
+      <DependentUpon>MoveFilesToDir.cs</DependentUpon>
+    </Compile>
     <Compile Include="MoveVDirs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,6 +97,9 @@
     <Compile Include="VDirs.cs" />
     <EmbeddedResource Include="DocumentManager.resx">
       <DependentUpon>DocumentManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MoveFilesToDir.resx">
+      <DependentUpon>MoveFilesToDir.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MoveVDirs.resx">
       <DependentUpon>MoveVDirs.cs</DependentUpon>

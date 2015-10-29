@@ -92,13 +92,13 @@
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripDirs = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addNewDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.renameDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteALLDirsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.renameDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.Notes.SuspendLayout();
             this.Details.SuspendLayout();
@@ -414,6 +414,7 @@
             this.buttonMove.TabIndex = 21;
             this.buttonMove.Text = "Move";
             this.buttonMove.UseVisualStyleBackColor = true;
+            this.buttonMove.Click += new System.EventHandler(this.buttonMove_Click);
             // 
             // labelFavorite
             // 
@@ -614,7 +615,7 @@
             this.expandAllToolStripMenuItem,
             this.colapseAllToolStripMenuItem});
             this.contextMenuStripDirs.Name = "contextMenuStripDirs";
-            this.contextMenuStripDirs.Size = new System.Drawing.Size(196, 186);
+            this.contextMenuStripDirs.Size = new System.Drawing.Size(196, 164);
             // 
             // addNewDirToolStripMenuItem
             // 
@@ -622,6 +623,13 @@
             this.addNewDirToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
             this.addNewDirToolStripMenuItem.Text = "Add new dir";
             this.addNewDirToolStripMenuItem.Click += new System.EventHandler(this.addNewDirToolStripMenuItem_Click);
+            // 
+            // renameDirToolStripMenuItem
+            // 
+            this.renameDirToolStripMenuItem.Name = "renameDirToolStripMenuItem";
+            this.renameDirToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.renameDirToolStripMenuItem.Text = "Rename dir";
+            this.renameDirToolStripMenuItem.Click += new System.EventHandler(this.renameDirToolStripMenuItem_Click);
             // 
             // moveDirToolStripMenuItem
             // 
@@ -662,13 +670,6 @@
             this.colapseAllToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
             this.colapseAllToolStripMenuItem.Text = "Colapse all";
             this.colapseAllToolStripMenuItem.Click += new System.EventHandler(this.colapseAllToolStripMenuItem_Click);
-            // 
-            // renameDirToolStripMenuItem
-            // 
-            this.renameDirToolStripMenuItem.Name = "renameDirToolStripMenuItem";
-            this.renameDirToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.renameDirToolStripMenuItem.Text = "Rename dir";
-            this.renameDirToolStripMenuItem.Click += new System.EventHandler(this.renameDirToolStripMenuItem_Click);
             // 
             // DocumentManager
             // 

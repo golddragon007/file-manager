@@ -211,6 +211,75 @@ namespace homework
             return files;
         }
 
+        // Returns a list those files which are not in any custom vdir.
+        public List<Files> getAllFilesWhichAreNotInADir()
+        {
+            List<Files> files = new List<Files>();
+
+            SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
+	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
+                    WHERE f.'vdirs_id' is NULL
+	                GROUP BY f.title", dbConnection);
+            SQLiteDataReader sqldr = sqlc.ExecuteReader();
+            while (sqldr.Read())
+            {
+                // Do not use sqldr["id"].toString() because it won't work and kill the program!
+                files.Add(new Files(
+                    Convert.ToInt32(sqldr["id"]),
+                    Convert.ToString(sqldr["title"]),
+                    Convert.ToString(sqldr["author"]),
+                    Convert.ToString(sqldr["year"]),
+                    Convert.ToString(sqldr["doi"]),
+                    Convert.ToString(sqldr["vdirs_id"]),
+                    Convert.ToBoolean(sqldr["favorite"]),
+                    Convert.ToString(sqldr["type"]),
+                    Convert.ToString(sqldr["tags_name"]),
+                    Convert.ToString(sqldr["note"]),
+                    Convert.ToString(sqldr["location"]),
+                    Convert.ToString(sqldr["added"]),
+                    Convert.ToString(sqldr["rread"])
+                    ));
+            }
+
+            return files;
+        }
+
+        // Returns a list those Files which are in the defined vdir.
+        public List<Files> getAllFilesFromDir(int dirId)
+        {
+            List<Files> files = new List<Files>();
+
+            SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
+	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
+                    WHERE f.'vdirs_id' = $vdirs_id
+	                GROUP BY f.title", dbConnection);
+            sqlc.Parameters.AddWithValue("$vdirs_id", dirId);
+            SQLiteDataReader sqldr = sqlc.ExecuteReader();
+            while (sqldr.Read())
+            {
+                // Do not use sqldr["id"].toString() because it won't work and kill the program!
+                files.Add(new Files(
+                    Convert.ToInt32(sqldr["id"]),
+                    Convert.ToString(sqldr["title"]),
+                    Convert.ToString(sqldr["author"]),
+                    Convert.ToString(sqldr["year"]),
+                    Convert.ToString(sqldr["doi"]),
+                    Convert.ToString(sqldr["vdirs_id"]),
+                    Convert.ToBoolean(sqldr["favorite"]),
+                    Convert.ToString(sqldr["type"]),
+                    Convert.ToString(sqldr["tags_name"]),
+                    Convert.ToString(sqldr["note"]),
+                    Convert.ToString(sqldr["location"]),
+                    Convert.ToString(sqldr["added"]),
+                    Convert.ToString(sqldr["rread"])
+                    ));
+            }
+
+            return files;
+        }
+
         // Get allowed file extensions.
         public string getFileExtensions()
         {
@@ -521,6 +590,15 @@ namespace homework
             SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET favorite = $favorite WHERE id = $id", dbConnection);
             sqlc.Parameters.AddWithValue("$id", id);
             sqlc.Parameters.AddWithValue("$favorite", isFavorite);
+            sqlc.ExecuteNonQuery();
+        }
+
+        // Move file to directory
+        public void moveFileToDir(int fileId, int dirId)
+        {
+            SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET vdirs_id = $vdirs_id WHERE id = $id", dbConnection);
+            sqlc.Parameters.AddWithValue("$id", fileId);
+            sqlc.Parameters.AddWithValue("$vdirs_id", (dirId == -1 ? null : dirId.ToString()));
             sqlc.ExecuteNonQuery();
         }
     }

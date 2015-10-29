@@ -103,6 +103,27 @@ namespace homework
                 {
                     files = dbm.getAllFilesFavorite();
                 }
+                else if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("4"))
+                {
+                    files = new List<Files>();
+                }
+                else if (rtn.Index.ToString().Equals("4"))
+                {
+                    // TODO (handle all from authors)
+                    files = new List<Files>();
+                }
+                else if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("5"))
+                {
+                    files = dbm.getAllFilesWhichAreNotInADir();
+                }
+                else if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("6"))
+                {
+                    files = new List<Files>();
+                }
+                else if (rtn.Index.ToString().Equals("6"))
+                {
+                    files = dbm.getAllFilesFromDir(((VDirs)selected.Tag).Id);
+                }
 
                 if (files != null)
                 {
@@ -451,6 +472,41 @@ namespace homework
             }
 
             generateCustomVDirs();
+        }
+
+        private void buttonMove_Click(object sender, EventArgs e)
+        {
+            if (listViewDocs.SelectedItems.Count != 0)
+            {
+                List<VDirs> fullPaths = new List<VDirs>();
+
+                fullPaths.Add(new VDirs(-1, "No directory", -1, "<<No directory>>"));
+                getAllFullPath(treeViewDirs.Nodes[6], ref fullPaths);
+
+                Files selectedFile = ((Files)listViewDocs.SelectedItems[0].Tag);
+                VDirs[] fullPathsArray = fullPaths.ToArray();
+                VDirs selectedVdir = null;
+
+                if (selectedFile.Vdir != null)
+                {
+                    foreach (VDirs currentVdir in fullPathsArray)
+                    {
+                        if (currentVdir.Id.ToString().Equals(selectedFile.Vdir))
+                        {
+                            selectedVdir = currentVdir;
+                            break;
+                        }
+                    }
+                }
+
+                MoveFilesToDir mftdw = new MoveFilesToDir(fullPathsArray, (selectedVdir == null ? fullPathsArray[0] : selectedVdir));
+                if (mftdw.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    dbm.moveFileToDir(selectedFile.Id, mftdw.NewDirId);
+
+                    listViewRefresh();
+                } 
+            }
         }
     }
 }
