@@ -75,6 +75,7 @@
             // 
             // buttonCancel
             // 
+            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(300, 73);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
@@ -95,6 +96,7 @@
             this.Controls.Add(this.comboBoxMoveInto);
             this.Controls.Add(this.labelMoveInto);
             this.Controls.Add(this.labelMoveableDir);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "MoveVDirs";
             this.Text = "Move directory into...";
             this.ResumeLayout(false);

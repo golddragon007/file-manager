@@ -465,6 +465,15 @@ namespace homework
             sqlc.ExecuteNonQuery();
         }
 
+        // Rename a vdir into another.
+        public void renameVdirs(int id, string newName)
+        {
+            SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE vdirs SET name = $name WHERE id = $id", dbConnection);
+            sqlc.Parameters.AddWithValue("$id", id);
+            sqlc.Parameters.AddWithValue("$name", newName);
+            sqlc.ExecuteNonQuery();
+        }
+
         // Remove selected vdir and his all child.
         public void removeVdirs(int removeableId)
         {

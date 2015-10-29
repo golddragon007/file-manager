@@ -439,5 +439,18 @@ namespace homework
             }
             listViewRefresh();
         }
+
+        private void renameDirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            VDirs selected = (VDirs)treeViewDirs.SelectedNode.Tag;
+
+            RenameVDir rvdw = new RenameVDir(selected.Name);
+            if (rvdw.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                dbm.renameVdirs(selected.Id, rvdw.NewName);
+            }
+
+            generateCustomVDirs();
+        }
     }
 }
