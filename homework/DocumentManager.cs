@@ -393,5 +393,36 @@ namespace homework
                 generateCustomVDirs();
             }
         }
+
+        private void deleteDirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            VDirs vds = (VDirs)treeViewDirs.SelectedNode.Tag;
+            if (MessageBox.Show("Are you sure you want to delete this and the sub directories?", "Delete confirmation", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+            {
+                dbm.removeVdirs(vds.Id);
+
+                generateCustomVDirs();
+            }
+        }
+
+        private void deleteALLDirsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to delete ALL directories from the root?", "Delete all directories?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+            {
+                dbm.removeAllVdirs();
+
+                generateCustomVDirs();
+            }
+        }
+
+        private void expandAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            treeViewDirs.ExpandAll();
+        }
+
+        private void colapseAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            treeViewDirs.CollapseAll();
+        }
     }
 }

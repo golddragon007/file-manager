@@ -462,5 +462,44 @@ namespace homework
             sqlc.Parameters.AddWithValue("$parentdir_id", (newSubId == -1 ? null : newSubId.ToString()));
             sqlc.ExecuteNonQuery();
         }
+
+        public void removeVdirs(int removeableId)
+        {
+            using (var transaction = dbConnection.BeginTransaction())
+            {
+                SQLiteCommand sqlc = new SQLiteCommand(@"WITH vdirsCTE AS (
+                        SELECT *,0 AS steps
+                        FROM vdirs
+                        WHERE id = $id
+    
+                        UNION ALL
+  
+                        SELECT mgr.*, usr.steps + 1 AS steps
+                        FROM vdirsCTE AS usr
+                        INNER JOIN vdirs AS mgr
+                            ON usr.id = mgr.parentdir_id
+                    )
+                    SELECT * FROM vdirsCTE AS u ORDER BY steps DESC;", dbConnection);
+                sqlc.Parameters.AddWithValue("$id", removeableId);
+                SQLiteDataReader sqldr = sqlc.ExecuteReader();
+                using (var cmd = dbConnection.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM vdirs WHERE id = $id;";
+
+                    while(sqldr.Read())
+                    {
+                        cmd.Parameters.AddWithValue("$id", Convert.ToString(sqldr["id"]));
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                transaction.Commit();
+            }
+        }
+
+        public void removeAllVdirs()
+        {
+            SQLiteCommand sqlc = new SQLiteCommand(@"DELETE FROM vdirs;", dbConnection);
+            sqlc.ExecuteNonQuery();
+        }
     }
 }
