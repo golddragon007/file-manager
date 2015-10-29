@@ -27,15 +27,15 @@ namespace homework
 
             treeViewDirs.SelectedNode = treeViewDirs.Nodes[0];
             listViewRefresh();
-            VDirs allVDirs = dbm.getVDirs();
-            generateCustomVDirs(allVDirs);
+            generateCustomVDirs();
         }
 
         // Build up the Custom dirs.
-        private void generateCustomVDirs(VDirs actualPack)
+        private void generateCustomVDirs()
         {
+            VDirs allVDirs = dbm.getVDirs();
             treeViewDirs.Nodes[6].Nodes.Clear();
-            foreach (VDirs actualItem in actualPack.Subdirs)
+            foreach (VDirs actualItem in allVDirs.Subdirs)
             {
                 TreeNode tn = new TreeNode(actualItem.Name, generateCustomVDirsRecursive(actualItem));
                 tn.Tag = actualItem;
@@ -85,7 +85,7 @@ namespace homework
                 List<Files> files = null;
                 TreeNode rtn = FindRootNode(selected);
 
-                MessageBox.Show(selected.FullPath + " > " + rtn.Index.ToString() + " : " + selected.Level.ToString() + " : " + selected.Index.ToString());
+                //MessageBox.Show(selected.FullPath + " > " + rtn.Index.ToString() + " : " + selected.Level.ToString() + " : " + selected.Index.ToString());
 
                 if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("0"))
                 {
@@ -267,7 +267,7 @@ namespace homework
         {
             List<Files> files = dbm.simpleSearch(textBoxSimpleSearch.Text);
 
-            if (files != null)
+            if (files != null || files.Count == 0)
             {
                 listViewDocs.Items.Clear();
 
@@ -291,6 +291,37 @@ namespace homework
             else
             {
                 MessageBox.Show("No resoults found!");
+            }
+        }
+
+        // Get full paths in recursive mode.
+        private void getAllFullPath(TreeNode tn, ref List<VDirs> fullPaths)
+        {
+            if (tn != null)
+            {
+                foreach (TreeNode tni in tn.Nodes)
+                {
+                    VDirs tmp = (VDirs)tni.Tag;
+                    tmp.FullPath = tni.FullPath;
+                    fullPaths.Add(tmp);
+                    getAllFullPath(tni, ref fullPaths);
+                }
+            }
+        }
+
+        private void buttonCreateFolder_Click(object sender, EventArgs e)
+        {
+            List<VDirs> fullPaths = new List<VDirs>();
+
+            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[6].Text, -1, treeViewDirs.Nodes[6].FullPath));
+            getAllFullPath(treeViewDirs.Nodes[6], ref fullPaths);
+
+            NewVDir nvdw = new NewVDir(fullPaths.ToArray());
+            if (nvdw.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                dbm.addVdirs(nvdw.MainID, nvdw.NewDirName);
+
+                generateCustomVDirs();
             }
         }
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace homework
 {
-    class VDirs
+    public class VDirs
     {
         List<VDirs> subdirs;
 
@@ -37,6 +37,14 @@ namespace homework
             set { parentId = value; }
         }
 
+        string fullPath;
+
+        public string FullPath
+        {
+            get { return fullPath; }
+            set { fullPath = value; }
+        }
+
         public VDirs(int id, string name)
         {
             this.id = id;
@@ -49,6 +57,15 @@ namespace homework
             this.id = id;
             this.name = name;
             this.parentId = parentId;
+            this.subdirs = new List<VDirs>();
+        }
+
+        public VDirs(int id, string name, int parentId, string fullPath)
+        {
+            this.id = id;
+            this.name = name;
+            this.parentId = parentId;
+            this.fullPath = fullPath;
             this.subdirs = new List<VDirs>();
         }
 
@@ -93,6 +110,11 @@ namespace homework
         public int getChildCount()
         {
             return this.subdirs.Count;
+        }
+
+        public override string ToString()
+        {
+            return fullPath;
         }
     }
 }

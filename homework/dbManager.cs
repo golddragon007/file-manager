@@ -446,5 +446,13 @@ namespace homework
                 return tmp;
             }
         }
+
+        public void addVdirs(int mainID, string newDirName)
+        {
+            SQLiteCommand sqlc = new SQLiteCommand(@"INSERT INTO vdirs (name, parentdir_id) VALUES ($name, $parentdir_id)", dbConnection);
+            sqlc.Parameters.AddWithValue("$name", newDirName);
+            sqlc.Parameters.AddWithValue("$parentdir_id", (mainID == -1 ? null : mainID.ToString()));
+            sqlc.ExecuteNonQuery();
+        }
     }
 }

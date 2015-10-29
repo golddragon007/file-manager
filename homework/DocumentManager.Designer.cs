@@ -192,6 +192,7 @@
             this.buttonCreateFolder.TabIndex = 4;
             this.buttonCreateFolder.Text = "Create Folder";
             this.buttonCreateFolder.UseVisualStyleBackColor = true;
+            this.buttonCreateFolder.Click += new System.EventHandler(this.buttonCreateFolder_Click);
             // 
             // treeViewDirs
             // 
