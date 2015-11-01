@@ -723,5 +723,18 @@ namespace homework
                 transaction.Commit();
             }
         }
+
+        // This finds all files, which have 'Biztosítás' and 'pdf' tags on it.
+        //Select *
+        //From files As f
+        //Where Exists    (
+        //        Select 1
+        //        From file_tag As ft
+        //        LEFT JOIN tags t ON t.id = ft.tags_id
+        //        Where t.name In('Biztosítás','pdf') --insert tags here, it can't be empty!
+        //            And ft.files_id = f.Id
+        //        Group By ft.files_id
+        //        Having Count(*) = 2 --tags no.
+        //        ) --insert addicional condition here
     }
 }
