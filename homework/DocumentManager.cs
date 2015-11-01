@@ -18,12 +18,15 @@ namespace homework
     public partial class DocumentManager : Form
     {
         dbManager dbm;
+        Boolean editable;
+        Files displayedFile;
 
         public DocumentManager()
         {
             InitializeComponent();
 
             dbm = new dbManager("catalog.fmdb");
+            editable = false;
 
             treeViewDirs.SelectedNode = treeViewDirs.Nodes[0];
             listViewRefresh();
@@ -507,6 +510,68 @@ namespace homework
                     listViewRefresh();
                 } 
             }
+        }
+
+        /// <summary>
+        /// Makes the text boxes editable or not editable and changes the text on the buttonEdit.
+        /// </summary>
+        /// <param name="setEdit"></param>
+        private void setEditable(Boolean setEdit) 
+        {
+            editable = setEdit;
+            textBoxTitle.Enabled = setEdit;
+            textBoxAuthor.Enabled = setEdit;
+            textBoxYear.Enabled = setEdit;
+            textBoxDOI.Enabled = setEdit;
+            textBoxTags.Enabled = setEdit;
+            checkBoxFavourite.Enabled = setEdit;
+            textBoxTitle.ReadOnly = !setEdit;
+            textBoxAuthor.ReadOnly = !setEdit;
+            textBoxYear.ReadOnly = !setEdit;
+            textBoxDOI.ReadOnly = !setEdit;
+            textBoxTags.ReadOnly = !setEdit;
+
+            if (setEdit)
+                buttonEdit.Text = "Save";
+            else
+                buttonEdit.Text = "Edit";
+        }
+
+        private void buttonEdit_Click(object sender, EventArgs e)
+        {
+            if (editable)
+            {
+                setEditable(false);
+                displayedFile.Title = textBoxTitle.Text;
+                displayedFile.Author = textBoxAuthor.Text;
+                displayedFile.Year = textBoxYear.Text;
+                displayedFile.Doi = textBoxDOI.Text;
+                displayedFile.Tags = textBoxTags.Text;
+                displayedFile.Favorite = checkBoxFavourite.Checked;
+                dbm.saveModifiedFileRecords(displayedFile);
+            }
+            else
+            {
+                setEditable(true);
+            }
+
+        }
+
+        /// <summary>
+        /// Displays properties of the selected file on the right side.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listViewDocs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            setEditable(false);
+            displayedFile = (Files)listViewDocs.SelectedItems[0].Tag;
+            textBoxTitle.Text = displayedFile.Title;
+            textBoxAuthor.Text = displayedFile.Author;
+            textBoxYear.Text = displayedFile.Year;
+            textBoxDOI.Text = displayedFile.Doi;
+            textBoxTags.Text = displayedFile.Tags;
+            checkBoxFavourite.Checked = displayedFile.Favorite;
         }
     }
 }
