@@ -14,7 +14,7 @@ namespace homework
         private string dbName;
         private SQLiteConnection dbConnection;
 
-        // Constructor, create automaticalli a connection to the definied db.
+        // Constructor, create automatically a connection to the definied db.
         public dbManager(string dbName)
         {
             this.dbName = dbName;
@@ -37,7 +37,7 @@ namespace homework
                 // tags: id, name
                 // vdirs: id, name, parentdir_id
                 // settings: id, name, value
-                // Use http://sqlitebrowser.org/ program to watch how it looks like the db strukture.
+                // Use http://sqlitebrowser.org/ program to watch how it looks like the db structure.
 
                 SQLiteCommand sqlc = new SQLiteCommand("CREATE TABLE 'files' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE, 'title' VARCHAR NOT NULL, 'author' VARCHAR NULL DEFAULT NULL, 'year' INTEGER NULL DEFAULT NULL, 'DOI' VARCHAR NULL DEFAULT NULL, 'vdirs_id' INTEGER NULL DEFAULT NULL REFERENCES vdirs(id) ON UPDATE RESTRICT ON DELETE RESTRICT, 'favorite' BOOL DEFAULT 0, 'type' VARCHAR NOT NULL, 'note' VARCHAR NULL DEFAULT NULL, 'location' VARCHAR NOT NULL, 'added' VARCHAR DEFAULT CURRENT_TIMESTAMP, 'rread' VARCHAR NULL DEFAULT NULL)", dbConnection);
                 sqlc.ExecuteNonQuery();
@@ -80,7 +80,7 @@ namespace homework
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
-                // Do not use sqldr["id"].toString() because it won't work and kill the program!
+                // Do not use sqldr["id"].toString() because it won't work and kills the program!
                 files.Add(new Files(
                     Convert.ToInt32(sqldr["id"]),
                     Convert.ToString(sqldr["title"]),
@@ -118,7 +118,7 @@ namespace homework
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
-                // Do not use sqldr["id"].toString() because it won't work and kill the program!
+                // Do not use sqldr["id"].toString() because it won't work and kills the program!
                 files.Add(new Files(
                     Convert.ToInt32(sqldr["id"]),
                     Convert.ToString(sqldr["title"]),
@@ -156,7 +156,7 @@ namespace homework
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
-                // Do not use sqldr["id"].toString() because it won't work and kill the program!
+                // Do not use sqldr["id"].toString() because it won't work and kills the program!
                 files.Add(new Files(
                     Convert.ToInt32(sqldr["id"]),
                     Convert.ToString(sqldr["title"]),
@@ -190,7 +190,7 @@ namespace homework
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
-                // Do not use sqldr["id"].toString() because it won't work and kill the program!
+                // Do not use sqldr["id"].toString() because it won't work and kills the program!
                 files.Add(new Files(
                     Convert.ToInt32(sqldr["id"]),
                     Convert.ToString(sqldr["title"]),
@@ -224,7 +224,7 @@ namespace homework
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
-                // Do not use sqldr["id"].toString() because it won't work and kill the program!
+                // Do not use sqldr["id"].toString() because it won't work and kills the program!
                 files.Add(new Files(
                     Convert.ToInt32(sqldr["id"]),
                     Convert.ToString(sqldr["title"]),
@@ -259,7 +259,7 @@ namespace homework
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
-                // Do not use sqldr["id"].toString() because it won't work and kill the program!
+                // Do not use sqldr["id"].toString() because it won't work and kills the program!
                 files.Add(new Files(
                     Convert.ToInt32(sqldr["id"]),
                     Convert.ToString(sqldr["title"]),
@@ -369,7 +369,7 @@ namespace homework
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
-                // Do not use sqldr["id"].toString() because it won't work and kill the program!
+                // Do not use sqldr["id"].toString() because it won't work and kills the program!
                 files.Add(new Files(
                     Convert.ToInt32(sqldr["id"]),
                     Convert.ToString(sqldr["title"]),
@@ -390,7 +390,7 @@ namespace homework
             return files;
         }
 
-        // Set receantly read parameter.
+        // Set recently read parameter.
         public void setReceantlyReadNow(int id)
         {
             // Actual date.
@@ -599,6 +599,22 @@ namespace homework
             SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET vdirs_id = $vdirs_id WHERE id = $id", dbConnection);
             sqlc.Parameters.AddWithValue("$id", fileId);
             sqlc.Parameters.AddWithValue("$vdirs_id", (dirId == -1 ? null : dirId.ToString()));
+            sqlc.ExecuteNonQuery();
+        }
+
+        //Save modified file record
+        public void saveModifiedFileRecords(Files fi)
+        {
+            SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET title = $title, author = $author, year = $year, doi = $doi, " 
+//                                                    + " tags = $tags,"            //TODO
+                                                    + " favorite = $favorite WHERE id = $id", dbConnection);
+            sqlc.Parameters.AddWithValue("$id", fi.Id);
+            sqlc.Parameters.AddWithValue("$title", fi.Title);
+            sqlc.Parameters.AddWithValue("$author", fi.Author);
+            sqlc.Parameters.AddWithValue("$year", fi.Year);
+            sqlc.Parameters.AddWithValue("$doi", fi.Doi);
+//            sqlc.Parameters.AddWithValue("$tags", fi.Tags);   //TODO
+            sqlc.Parameters.AddWithValue("$favorite", fi.Favorite);
             sqlc.ExecuteNonQuery();
         }
     }
