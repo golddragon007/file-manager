@@ -94,6 +94,7 @@
     <Compile Include="RenameVDir.Designer.cs">
       <DependentUpon>RenameVDir.cs</DependentUpon>
     </Compile>
+    <Compile Include="SqlCommandExt.cs" />
     <Compile Include="VDirs.cs" />
     <EmbeddedResource Include="DocumentManager.resx">
       <DependentUpon>DocumentManager.cs</DependentUpon>

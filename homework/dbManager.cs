@@ -605,17 +605,123 @@ namespace homework
         //Save modified file record
         public void saveModifiedFileRecords(Files fi)
         {
-            SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET title = $title, author = $author, year = $year, doi = $doi, " 
-//                                                    + " tags = $tags,"            //TODO
-                                                    + " favorite = $favorite WHERE id = $id", dbConnection);
-            sqlc.Parameters.AddWithValue("$id", fi.Id);
-            sqlc.Parameters.AddWithValue("$title", fi.Title);
-            sqlc.Parameters.AddWithValue("$author", fi.Author);
-            sqlc.Parameters.AddWithValue("$year", fi.Year);
-            sqlc.Parameters.AddWithValue("$doi", fi.Doi);
-//            sqlc.Parameters.AddWithValue("$tags", fi.Tags);   //TODO
-            sqlc.Parameters.AddWithValue("$favorite", fi.Favorite);
-            sqlc.ExecuteNonQuery();
+            using (var transaction = dbConnection.BeginTransaction())
+            {
+                string[] tags = fi.Tags.Split(new string[]{", ", ","}, StringSplitOptions.RemoveEmptyEntries);
+                // For remove other empty lines i.e. " ".
+                for (int i = 0; i < tags.Length; i++)
+                {
+                    tags[i] = tags[i].Trim();
+                }
+                tags = tags.Where(val => !string.IsNullOrEmpty(val)).ToArray();
+
+                List<string> existLinkedTagsName = new List<string>();
+                List<int> existLinkedTagsId = new List<int>();
+
+                // Find exist and linked tags.
+                SQLiteCommand sqlcf = new SQLiteCommand(@"SELECT t.* FROM tags t
+                                            LEFT JOIN file_tag ft ON t.'id' = ft.'tags_id'
+                                            WHERE t.name IN ({names}) AND ft.'files_id' = $files_id;", dbConnection);
+                sqlcf.Parameters.AddWithValue("$files_id", fi.Id);
+                sqlcf.AddArrayParameters("names", tags);
+                SQLiteDataReader sqlcfr = sqlcf.ExecuteReader();
+                while (sqlcfr.Read())
+                {
+                    existLinkedTagsId.Add(Convert.ToInt32(sqlcfr["id"]));
+                    existLinkedTagsName.Add(Convert.ToString(sqlcfr["name"]));
+                }
+
+                string[] linkedTagsDiff = new string[0];
+                if (existLinkedTagsName.Count > 0)
+                {
+                    // Gets deleted and new tags.
+                    linkedTagsDiff = tags.Except(existLinkedTagsName.ToArray()).ToArray(); 
+                }
+
+                if (existLinkedTagsId.Count > 0)
+                {
+                    // Search and delete those records which was removed from the Files' tags.
+                    SQLiteCommand sqlcdFileTag = new SQLiteCommand(@"DELETE  
+                            FROM    file_tag
+                            WHERE   files_id = $files_id AND
+                                    tags_id NOT IN ({tags_id});", dbConnection);
+                    sqlcdFileTag.Parameters.AddWithValue("$files_id", fi.Id);
+                    sqlcdFileTag.AddArrayParameters("tags_id", existLinkedTagsId.ToArray());
+                    sqlcdFileTag.ExecuteNonQuery(); 
+                }
+
+
+                List<string> existTagsName = new List<string>();
+                List<int> existTagsId = new List<int>();
+
+                // Get's not linked exist tags.
+                SQLiteCommand sqlcft = new SQLiteCommand(@"SELECT * FROM tags WHERE name IN ({name})", dbConnection);
+                sqlcft.AddArrayParameters("name", linkedTagsDiff);
+                SQLiteDataReader sqlcftr = sqlcft.ExecuteReader();
+                while (sqlcftr.Read())
+                {
+                    existTagsId.Add(Convert.ToInt32(sqlcftr["id"]));
+                    existTagsName.Add(Convert.ToString(sqlcftr["name"]));
+                }
+
+                string[] tagsDiff = new string[0];
+                // Gets new tags.
+                tagsDiff = linkedTagsDiff.Except(existTagsName.ToArray()).ToArray();
+
+                if (tagsDiff.Length > 0)
+                {
+                    foreach (string item in tagsDiff)
+                    {
+                        // Insert new tag name.
+                        SQLiteCommand sqlci = new SQLiteCommand(@"INSERT INTO tags (name) VALUES ($name);", dbConnection);
+                        sqlci.Parameters.AddWithValue("$name", item);
+                        int a = sqlci.ExecuteNonQuery();
+
+                        // Get last insert id.
+                        SQLiteCommand Command = new SQLiteCommand(@"select last_insert_rowid()", dbConnection);
+                        long lastId = (long)Command.ExecuteScalar();
+
+                        // Add new insert id to collection.
+                        existTagsId.Add(Convert.ToInt32(lastId));
+                    }
+                }
+
+                if (existTagsId.Count > 0)
+                {
+                    foreach (int item in existTagsId)
+                    {
+                        // Add newly added tags to file.
+                        SQLiteCommand sqlci = new SQLiteCommand(@"INSERT INTO file_tag (files_id, tags_id) VALUES ($files_id, $tags_id);", dbConnection);
+                        sqlci.Parameters.AddWithValue("$files_id", fi.Id);
+                        sqlci.Parameters.AddWithValue("$tags_id", item);
+                        int a = sqlci.ExecuteNonQuery();
+                    }
+                }
+
+                // Search and delete those records which doesn't have pair in file_tag table form tags table.
+                SQLiteCommand sqlcd = new SQLiteCommand(@"DELETE  
+                            FROM    tags
+                            WHERE   id NOT IN
+                                    (
+                                    SELECT  tags_id
+                                    FROM    file_tag
+                                    );", dbConnection);
+                sqlcd.ExecuteNonQuery();
+
+                SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET title = $title, author = $author, year = $year, doi = $doi, " 
+    //                                                    + " tags = $tags,"            //TODO
+                                                        + " favorite = $favorite WHERE id = $id", dbConnection);
+                sqlc.Parameters.AddWithValue("$id", fi.Id);
+                sqlc.Parameters.AddWithValue("$title", fi.Title);
+                sqlc.Parameters.AddWithValue("$author", fi.Author);
+                sqlc.Parameters.AddWithValue("$year", fi.Year);
+                sqlc.Parameters.AddWithValue("$doi", fi.Doi);
+    //            sqlc.Parameters.AddWithValue("$tags", fi.Tags);   //TODO
+                sqlc.Parameters.AddWithValue("$favorite", fi.Favorite);
+                sqlc.ExecuteNonQuery();
+
+                transaction.Commit();
+            }
         }
     }
 }
