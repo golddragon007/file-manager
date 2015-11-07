@@ -452,9 +452,9 @@ namespace homework
                                 (sqldr["parentdir_id"] == System.DBNull.Value ? -1 : Convert.ToInt32(sqldr["parentdir_id"]))
                             ));
                     if (firstId == -2)
-	                {
+                    {
                         firstId = (sqldr["parentdir_id"] == System.DBNull.Value ? -1 : Convert.ToInt32(sqldr["parentdir_id"]));
-	                }
+                    }
                 }
 
                 List<int> idEnd = new List<int>();
@@ -467,7 +467,7 @@ namespace homework
 
                 returnVdir = recursiveBuildVDirs(ref tmpVdirs, ref idEnd, firstId);
             }
-                
+
             return returnVdir;
         }
 
@@ -567,7 +567,7 @@ namespace homework
                 {
                     cmd.CommandText = "DELETE FROM vdirs WHERE id = $id;";
 
-                    while(sqldr.Read())
+                    while (sqldr.Read())
                     {
                         cmd.Parameters.AddWithValue("$id", Convert.ToString(sqldr["id"]));
                         cmd.ExecuteNonQuery();
@@ -607,7 +607,7 @@ namespace homework
         {
             using (var transaction = dbConnection.BeginTransaction())
             {
-                string[] tags = fi.Tags.Split(new string[]{", ", ","}, StringSplitOptions.RemoveEmptyEntries);
+                string[] tags = fi.Tags.Split(new string[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
                 // For remove other empty lines i.e. " ".
                 for (int i = 0; i < tags.Length; i++)
                 {
@@ -635,7 +635,7 @@ namespace homework
                 if (existLinkedTagsName.Count > 0)
                 {
                     // Gets deleted and new tags.
-                    linkedTagsDiff = tags.Except(existLinkedTagsName.ToArray()).ToArray(); 
+                    linkedTagsDiff = tags.Except(existLinkedTagsName.ToArray()).ToArray();
                 }
 
                 if (existLinkedTagsId.Count > 0)
@@ -647,7 +647,7 @@ namespace homework
                                     tags_id NOT IN ({tags_id});", dbConnection);
                     sqlcdFileTag.Parameters.AddWithValue("$files_id", fi.Id);
                     sqlcdFileTag.AddArrayParameters("tags_id", existLinkedTagsId.ToArray());
-                    sqlcdFileTag.ExecuteNonQuery(); 
+                    sqlcdFileTag.ExecuteNonQuery();
                 }
 
 
@@ -708,15 +708,15 @@ namespace homework
                                     );", dbConnection);
                 sqlcd.ExecuteNonQuery();
 
-                SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET title = $title, author = $author, year = $year, doi = $doi, " 
-    //                                                    + " tags = $tags,"            //TODO
+                SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET title = $title, author = $author, year = $year, doi = $doi, "
+                    //                                                    + " tags = $tags,"            //TODO
                                                         + " favorite = $favorite WHERE id = $id", dbConnection);
                 sqlc.Parameters.AddWithValue("$id", fi.Id);
                 sqlc.Parameters.AddWithValue("$title", fi.Title);
                 sqlc.Parameters.AddWithValue("$author", fi.Author);
                 sqlc.Parameters.AddWithValue("$year", fi.Year);
                 sqlc.Parameters.AddWithValue("$doi", fi.Doi);
-    //            sqlc.Parameters.AddWithValue("$tags", fi.Tags);   //TODO
+                //            sqlc.Parameters.AddWithValue("$tags", fi.Tags);   //TODO
                 sqlc.Parameters.AddWithValue("$favorite", fi.Favorite);
                 sqlc.ExecuteNonQuery();
 
@@ -736,5 +736,106 @@ namespace homework
         //        Group By ft.files_id
         //        Having Count(*) = 2 --tags no.
         //        ) --insert addicional condition here
+
+        //
+        public List<Files> getASFiles(ASCriteria criteria)
+        {
+            List<Files> files = new List<Files>();
+
+            string where = "";
+
+            string command = @"SELECT  f.*, group_concat(t.name, ', ') AS tags_name FROM files f
+	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'";
+
+            if (criteria.Title != "")
+            {
+                where += "and f.title LIKE '%" + criteria.Title + "%' ";
+            }
+
+            if (criteria.Author != "")
+            {
+                where += "and f.author LIKE '%" + criteria.Author + "%' ";
+            }
+
+            if (criteria.Doi != "")
+            {
+                where += "and f.doi LIKE '%" + criteria.Doi + "%' ";
+            }
+
+            if (criteria.Tags != "")
+            {
+                string[] tags = criteria.Tags.Split(new char[] { ' ' });
+                string tagCommand = "";
+                foreach (string tag in tags) 
+                {
+                    tagCommand += "or t.name = '" + tag + "' "; 
+                }
+                tagCommand = tagCommand + tagCommand.Remove(0,3);
+                where += "(" + tagCommand + ")";
+            }
+
+            if (criteria.YearFrom != 0)
+            {
+                where += "and f.year >= " + criteria.YearFrom + " ";
+            }
+
+            if (criteria.YearTo != 0)
+            {
+                where += "and f.year <= " + criteria.YearTo + " ";
+            }
+
+            if (criteria.AddedFrom > DateTime.MinValue)
+            {
+                where += "and f.added >= " + criteria.AddedFrom + " ";
+            }
+
+            if (criteria.AddedTo > DateTime.MinValue)
+            {
+                where += "and f.added <= " + criteria.AddedTo + " ";
+            }
+
+            if (criteria.Notes != "")
+            {
+                where += "and f.note LIKE '%" + criteria.Notes + "%' ";
+            }
+
+            if (criteria.Favorite)
+            {
+                where += "and f.favorite = 1 ";
+            }
+
+            if (where != "")
+            {
+                where = "WHERE " + where.Remove(0, 4);
+                command += where;
+            }
+
+            command += @"GROUP BY f.title";
+
+            SQLiteCommand sqlc = new SQLiteCommand(command, dbConnection);
+            SQLiteDataReader sqldr = sqlc.ExecuteReader();
+            while (sqldr.Read())
+            {
+                // Do not use sqldr["id"].toString() because it won't work and kills the program!
+                files.Add(new Files(
+                    Convert.ToInt32(sqldr["id"]),
+                    Convert.ToString(sqldr["title"]),
+                    Convert.ToString(sqldr["author"]),
+                    Convert.ToString(sqldr["year"]),
+                    Convert.ToString(sqldr["doi"]),
+                    Convert.ToString(sqldr["vdirs_id"]),
+                    Convert.ToBoolean(sqldr["favorite"]),
+                    Convert.ToString(sqldr["type"]),
+                    Convert.ToString(sqldr["tags_name"]),
+                    Convert.ToString(sqldr["note"]),
+                    Convert.ToString(sqldr["location"]),
+                    Convert.ToString(sqldr["added"]),
+                    Convert.ToString(sqldr["rread"])
+                    ));
+            }
+
+            return files;
+        }
     }
 }

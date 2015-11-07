@@ -227,6 +227,7 @@ namespace homework
                 textBoxTags.Text = selectedFiles.Tags;
                 textBoxTitle.Text = selectedFiles.Title;
                 textBoxYear.Text = selectedFiles.Year;
+                textBoxNotes.Text = selectedFiles.Note;
                 checkBoxFavourite.Checked = selectedFiles.Favorite;
                 labelPathValue.Text = selectedFiles.Location;
                 labelSizeValue.Text = selectedFiles.SizeUnit;
@@ -240,6 +241,7 @@ namespace homework
                 textBoxTags.Text = "";
                 textBoxTitle.Text = "";
                 textBoxYear.Text = "";
+                textBoxNotes.Text = "";
                 checkBoxFavourite.Checked = false;
                 labelPathValue.Text = "";
                 labelSizeValue.Text = "";
@@ -250,6 +252,7 @@ namespace homework
             textBoxNotes.ReadOnly = true;
             textBoxTags.ReadOnly = true;
             textBoxTitle.ReadOnly = true;
+            textBoxNotes.ReadOnly = true;
             textBoxYear.ReadOnly = true;
             checkBoxFavourite.Enabled = false;
         }
@@ -524,12 +527,14 @@ namespace homework
             textBoxYear.Enabled = setEdit;
             textBoxDOI.Enabled = setEdit;
             textBoxTags.Enabled = setEdit;
+            textBoxNotes.Enabled = setEdit;
             checkBoxFavourite.Enabled = setEdit;
             textBoxTitle.ReadOnly = !setEdit;
             textBoxAuthor.ReadOnly = !setEdit;
             textBoxYear.ReadOnly = !setEdit;
             textBoxDOI.ReadOnly = !setEdit;
             textBoxTags.ReadOnly = !setEdit;
+            textBoxNotes.ReadOnly = !setEdit;
 
             if (setEdit)
                 buttonEdit.Text = "Save";
@@ -547,6 +552,7 @@ namespace homework
                 displayedFile.Year = textBoxYear.Text;
                 displayedFile.Doi = textBoxDOI.Text;
                 displayedFile.Tags = textBoxTags.Text;
+                displayedFile.Note = textBoxNotes.Text;
                 displayedFile.Favorite = checkBoxFavourite.Checked;
                 dbm.saveModifiedFileRecords(displayedFile);
             }
@@ -564,14 +570,48 @@ namespace homework
         /// <param name="e"></param>
         private void listViewDocs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            setEditable(false);
-            displayedFile = (Files)listViewDocs.SelectedItems[0].Tag;
-            textBoxTitle.Text = displayedFile.Title;
-            textBoxAuthor.Text = displayedFile.Author;
-            textBoxYear.Text = displayedFile.Year;
-            textBoxDOI.Text = displayedFile.Doi;
-            textBoxTags.Text = displayedFile.Tags;
-            checkBoxFavourite.Checked = displayedFile.Favorite;
+            if (listViewDocs.SelectedItems.Count == 1)
+            {
+                setEditable(false);
+                displayedFile = (Files)listViewDocs.SelectedItems[0].Tag;
+                textBoxTitle.Text = displayedFile.Title;
+                textBoxAuthor.Text = displayedFile.Author;
+                textBoxYear.Text = displayedFile.Year;
+                textBoxDOI.Text = displayedFile.Doi;
+                textBoxTags.Text = displayedFile.Tags;
+                textBoxNotes.Text = displayedFile.Note;
+                checkBoxFavourite.Checked = displayedFile.Favorite;
+            }
+        }
+
+        private void buttonAdvancedSearch_Click(object sender, EventArgs e)
+        {
+            AdvancedSearch ads = new AdvancedSearch();
+            List<Files> files = null;
+            if (ads.ShowDialog() == DialogResult.OK)
+            {
+                files = dbm.getASFiles(ads.Criteria);
+
+                if (files != null)
+                {
+                    listViewDocs.Items.Clear();
+
+                    foreach (Files fileItem in files)
+                    {
+                        ListViewItem lvi = new ListViewItem(fileItem.Favorite.ToString());
+                        lvi.SubItems.Add(fileItem.Type);
+                        lvi.SubItems.Add(fileItem.Title);
+                        lvi.SubItems.Add(fileItem.Author);
+                        lvi.SubItems.Add(fileItem.Year);
+                        lvi.SubItems.Add(fileItem.Doi);
+                        lvi.SubItems.Add(fileItem.Added);
+
+                        lvi.Tag = fileItem;
+
+                        listViewDocs.Items.Add(lvi);
+                    }
+                }
+            }
         }
     }
 }
