@@ -606,7 +606,7 @@ namespace homework
             // Get all files/dirs which was dropped in the app
             foreach (string file in files)
             {
-                AddToPaths(ref paths, file);
+                AddFileFromPaths(ref paths, file);
             }
 
             string fileTypes = dbm.getFileExtensions(selectedFileType);
@@ -639,7 +639,7 @@ namespace homework
         }
 
         // Recursive get all files from a directory.
-        private void AddToPaths(ref List<string> paths, string fileOrDir)
+        private void AddFileFromPaths(ref List<string> paths, string fileOrDir)
         {
             if (File.Exists(fileOrDir))
             {
@@ -649,7 +649,7 @@ namespace homework
             {
                 foreach (string dir in Directory.GetDirectories(fileOrDir))
                 {
-                    AddToPaths(ref paths, dir);
+                    AddFileFromPaths(ref paths, dir);
                 }
 
                 foreach (string file in Directory.GetFiles(fileOrDir))
