@@ -383,14 +383,26 @@ namespace homework
             {
                 using (var cmd = dbConnection.CreateCommand())
                 {
-                    cmd.CommandText = "INSERT INTO files (id, title, author, year, doi, favorite, type, note, location, rread) VALUES (NULL, $title, NULL, NULL, NULL, 0, $type, NULL, $location, NULL);";
-
-                    foreach (var filePath in filePaths)
+                    using (var cmd2 = dbConnection.CreateCommand())
                     {
-                        cmd.Parameters.AddWithValue("$title", Path.GetFileNameWithoutExtension(filePath));
-                        cmd.Parameters.AddWithValue("$type", Path.GetExtension(filePath));
-                        cmd.Parameters.AddWithValue("$location", filePath);
-                        cmd.ExecuteNonQuery();
+                        cmd.CommandText = "INSERT INTO files (id, title, author, year, doi, favorite, type, note, location, rread) VALUES (NULL, $title, NULL, NULL, NULL, 0, $type, NULL, $location, NULL);";
+                        cmd2.CommandText = "SELECT count(*) AS db FROM files WHERE location = $location";
+
+                        foreach (var filePath in filePaths)
+                        {
+                            cmd2.Parameters.AddWithValue("$location", filePath);
+                            SQLiteDataReader sqldr = cmd2.ExecuteReader();
+                            sqldr.Read();
+
+                            if (Convert.ToInt32(sqldr["db"]) == 0)
+                            {
+                                cmd.Parameters.AddWithValue("$title", Path.GetFileNameWithoutExtension(filePath));
+                                cmd.Parameters.AddWithValue("$type", Path.GetExtension(filePath));
+                                cmd.Parameters.AddWithValue("$location", filePath);
+                                cmd.ExecuteNonQuery(); 
+                            }
+                            sqldr.Dispose();
+                        } 
                     }
                 }
                 transaction.Commit();

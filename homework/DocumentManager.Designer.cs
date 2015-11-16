@@ -29,17 +29,18 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode65 = new System.Windows.Forms.TreeNode("All Documents");
-            System.Windows.Forms.TreeNode treeNode66 = new System.Windows.Forms.TreeNode("Recently Added");
-            System.Windows.Forms.TreeNode treeNode67 = new System.Windows.Forms.TreeNode("Recently Read");
-            System.Windows.Forms.TreeNode treeNode68 = new System.Windows.Forms.TreeNode("Favorites");
-            System.Windows.Forms.TreeNode treeNode69 = new System.Windows.Forms.TreeNode("Author(s)");
-            System.Windows.Forms.TreeNode treeNode70 = new System.Windows.Forms.TreeNode("Unsorted");
-            System.Windows.Forms.TreeNode treeNode71 = new System.Windows.Forms.TreeNode("Tags");
-            System.Windows.Forms.TreeNode treeNode72 = new System.Windows.Forms.TreeNode("Custom Directories");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("All Documents");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Recently Added");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Recently Read");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Favorites");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Author(s)");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Unsorted");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Tags");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Custom Directories");
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addDictionaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createDiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,7 +101,6 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.createDiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.Notes.SuspendLayout();
             this.Details.SuspendLayout();
@@ -123,7 +123,7 @@
             // addFileToolStripMenuItem
             // 
             this.addFileToolStripMenuItem.Name = "addFileToolStripMenuItem";
-            this.addFileToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.addFileToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.addFileToolStripMenuItem.Text = "Add File";
             this.addFileToolStripMenuItem.Click += new System.EventHandler(this.buttonAddFile_Click);
             // 
@@ -133,10 +133,17 @@
             this.addDictionaryToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.addDictionaryToolStripMenuItem.Text = "Add Folder";
             // 
+            // createDiToolStripMenuItem
+            // 
+            this.createDiToolStripMenuItem.Name = "createDiToolStripMenuItem";
+            this.createDiToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.createDiToolStripMenuItem.Text = "Create Virtual Folder";
+            this.createDiToolStripMenuItem.Click += new System.EventHandler(this.buttonCreateFolder_Click);
+            // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
@@ -219,31 +226,31 @@
             this.treeViewDirs.HideSelection = false;
             this.treeViewDirs.Location = new System.Drawing.Point(12, 86);
             this.treeViewDirs.Name = "treeViewDirs";
-            treeNode65.Name = "AllDocuments";
-            treeNode65.Text = "All Documents";
-            treeNode66.Name = "RecentlyAdded";
-            treeNode66.Text = "Recently Added";
-            treeNode67.Name = "RecentlyRead";
-            treeNode67.Text = "Recently Read";
-            treeNode68.Name = "Favorites";
-            treeNode68.Text = "Favorites";
-            treeNode69.Name = "Authors";
-            treeNode69.Text = "Author(s)";
-            treeNode70.Name = "Unsorted";
-            treeNode70.Text = "Unsorted";
-            treeNode71.Name = "Tags";
-            treeNode71.Text = "Tags";
-            treeNode72.Name = "CustomDirs";
-            treeNode72.Text = "Custom Directories";
+            treeNode1.Name = "AllDocuments";
+            treeNode1.Text = "All Documents";
+            treeNode2.Name = "RecentlyAdded";
+            treeNode2.Text = "Recently Added";
+            treeNode3.Name = "RecentlyRead";
+            treeNode3.Text = "Recently Read";
+            treeNode4.Name = "Favorites";
+            treeNode4.Text = "Favorites";
+            treeNode5.Name = "Authors";
+            treeNode5.Text = "Author(s)";
+            treeNode6.Name = "Unsorted";
+            treeNode6.Text = "Unsorted";
+            treeNode7.Name = "Tags";
+            treeNode7.Text = "Tags";
+            treeNode8.Name = "CustomDirs";
+            treeNode8.Text = "Custom Directories";
             this.treeViewDirs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode65,
-            treeNode66,
-            treeNode67,
-            treeNode68,
-            treeNode69,
-            treeNode70,
-            treeNode71,
-            treeNode72});
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4,
+            treeNode5,
+            treeNode6,
+            treeNode7,
+            treeNode8});
             this.treeViewDirs.Size = new System.Drawing.Size(208, 377);
             this.treeViewDirs.TabIndex = 1;
             this.treeViewDirs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewDirs_AfterSelect);
@@ -610,7 +617,7 @@
             // moveToolStripMenuItem
             // 
             this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
-            this.moveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.moveToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.moveToolStripMenuItem.Text = "Move";
             this.moveToolStripMenuItem.Click += new System.EventHandler(this.buttonMove_Click);
             // 
@@ -688,13 +695,6 @@
             this.colapseAllToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
             this.colapseAllToolStripMenuItem.Text = "Colapse all";
             this.colapseAllToolStripMenuItem.Click += new System.EventHandler(this.colapseAllToolStripMenuItem_Click);
-            // 
-            // createDiToolStripMenuItem
-            // 
-            this.createDiToolStripMenuItem.Name = "createDiToolStripMenuItem";
-            this.createDiToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.createDiToolStripMenuItem.Text = "Create Virtual Folder";
-            this.createDiToolStripMenuItem.Click += new System.EventHandler(this.buttonCreateFolder_Click);
             // 
             // DocumentManager
             // 
