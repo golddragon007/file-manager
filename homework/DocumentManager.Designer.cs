@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("All Documents");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Recently Added");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Recently Read");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Favorites");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Author(s)");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Unsorted");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Tags");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Custom Directories");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("All Documents");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Recently Added");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Recently Read");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Favorites");
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Author(s)");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Unsorted");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Tags");
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Custom Directories");
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addDictionaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -178,6 +178,7 @@
             this.aboutDocumentManagerToolStripMenuItem.Name = "aboutDocumentManagerToolStripMenuItem";
             this.aboutDocumentManagerToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
             this.aboutDocumentManagerToolStripMenuItem.Text = "About Document Manager";
+            this.aboutDocumentManagerToolStripMenuItem.Click += new System.EventHandler(this.aboutDocumentManagerToolStripMenuItem_Click);
             // 
             // textBoxSimpleSearch
             // 
@@ -226,31 +227,31 @@
             this.treeViewDirs.HideSelection = false;
             this.treeViewDirs.Location = new System.Drawing.Point(12, 86);
             this.treeViewDirs.Name = "treeViewDirs";
-            treeNode1.Name = "AllDocuments";
-            treeNode1.Text = "All Documents";
-            treeNode2.Name = "RecentlyAdded";
-            treeNode2.Text = "Recently Added";
-            treeNode3.Name = "RecentlyRead";
-            treeNode3.Text = "Recently Read";
-            treeNode4.Name = "Favorites";
-            treeNode4.Text = "Favorites";
-            treeNode5.Name = "Authors";
-            treeNode5.Text = "Author(s)";
-            treeNode6.Name = "Unsorted";
-            treeNode6.Text = "Unsorted";
-            treeNode7.Name = "Tags";
-            treeNode7.Text = "Tags";
-            treeNode8.Name = "CustomDirs";
-            treeNode8.Text = "Custom Directories";
+            treeNode9.Name = "AllDocuments";
+            treeNode9.Text = "All Documents";
+            treeNode10.Name = "RecentlyAdded";
+            treeNode10.Text = "Recently Added";
+            treeNode11.Name = "RecentlyRead";
+            treeNode11.Text = "Recently Read";
+            treeNode12.Name = "Favorites";
+            treeNode12.Text = "Favorites";
+            treeNode13.Name = "Authors";
+            treeNode13.Text = "Author(s)";
+            treeNode14.Name = "Unsorted";
+            treeNode14.Text = "Unsorted";
+            treeNode15.Name = "Tags";
+            treeNode15.Text = "Tags";
+            treeNode16.Name = "CustomDirs";
+            treeNode16.Text = "Custom Directories";
             this.treeViewDirs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4,
-            treeNode5,
-            treeNode6,
-            treeNode7,
-            treeNode8});
+            treeNode9,
+            treeNode10,
+            treeNode11,
+            treeNode12,
+            treeNode13,
+            treeNode14,
+            treeNode15,
+            treeNode16});
             this.treeViewDirs.Size = new System.Drawing.Size(208, 377);
             this.treeViewDirs.TabIndex = 1;
             this.treeViewDirs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewDirs_AfterSelect);

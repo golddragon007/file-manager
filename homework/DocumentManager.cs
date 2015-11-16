@@ -769,5 +769,11 @@ namespace homework
             // Perform the sort with these new sort options.
             this.listViewDocs.Sort();
         }
+
+        private void aboutDocumentManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            About aw = new About();
+            aw.ShowDialog();
+        }
     }
 }
