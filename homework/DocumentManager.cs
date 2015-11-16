@@ -588,5 +588,122 @@ namespace homework
                 dbm.setCustomFileExtensions(sw.CustomTypes);
             }
         }
+
+        private void DocumentManager_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+        }
+
+        private void DocumentManager_DragDrop(object sender, DragEventArgs e)
+        {
+            List<string> paths = new List<string>();
+            List<string> pathsUseable = new List<string>();
+            
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            // Get all files/dirs which was dropped in the app
+            foreach (string file in files)
+            {
+                AddToPaths(ref paths, file);
+            }
+
+            string fileTypes = dbm.getFileExtensions(selectedFileType);
+
+            string[] extexp = fileTypes.Split(',');
+
+            string ext = "";
+
+            foreach (string extItem in extexp)
+            {
+                ext += ";." + extItem.Trim();
+            }
+            ext += ";";
+
+            // Remove non used files.
+            foreach (string path in paths)
+            {
+                string fext = Path.GetExtension(path);
+                if (ext.Contains(";" + fext + ";"))
+                {
+                    pathsUseable.Add(path);
+                }
+            }
+
+            dbm.addFiles(pathsUseable.ToArray());
+            listViewRefresh();
+
+            paths.Clear();
+            pathsUseable.Clear();
+        }
+
+        // Recursive get all files from a directory.
+        private void AddToPaths(ref List<string> paths, string fileOrDir)
+        {
+            if (File.Exists(fileOrDir))
+            {
+                paths.Add(fileOrDir);
+            }
+            else if (Directory.Exists(fileOrDir))
+            {
+                foreach (string dir in Directory.GetDirectories(fileOrDir))
+                {
+                    AddToPaths(ref paths, dir);
+                }
+
+                foreach (string file in Directory.GetFiles(fileOrDir))
+                {
+                    paths.Add(file);
+                }
+            }
+        }
+
+        private void listViewDocs_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            DoDragDrop(e.Item, DragDropEffects.Move);
+        }
+
+        private void treeViewDirs_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(ListViewItem)))
+            {
+                e.Effect = DragDropEffects.Move;
+            }
+        }
+
+        private void treeViewDirs_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(ListViewItem)))
+            {
+                /*var item = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
+                MessageBox.Show(item.Text);*/
+                Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
+                TreeNode DestinationNode = ((TreeView)sender).GetNodeAt(pt);
+                if (DestinationNode != null)
+                {
+                    TreeNode rtn = FindRootNode(DestinationNode);
+                    if (rtn.Index == 6 && DestinationNode.Level > 0)
+                    {
+                        foreach (ListViewItem item in listViewDocs.SelectedItems)
+                        {
+                            dbm.moveFileToDir(((Files)item.Tag).Id, ((VDirs)DestinationNode.Tag).Id);
+                        }
+
+                        listViewRefresh();
+                    }
+                    else
+                    {
+                        // If wrong treeView item.
+                        MessageBox.Show("You need to drop into a Custom Directory's chield!");
+                    }
+                }
+                else
+                {
+                    // If there's no treeView item.
+                    MessageBox.Show("You need to drop into a Custom Directory's chield!");
+                }
+            }
+        }
     }
 }

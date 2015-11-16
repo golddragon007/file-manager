@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("All Documents");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Recently Added");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Recently Read");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Favorites");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Author(s)");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Unsorted");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Custom Directories");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("All Documents");
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Recently Added");
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Recently Read");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Favorites");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Author(s)");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Unsorted");
+            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Custom Directories");
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addDictionaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -211,40 +211,44 @@
             // 
             // treeViewDirs
             // 
+            this.treeViewDirs.AllowDrop = true;
             this.treeViewDirs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treeViewDirs.HideSelection = false;
             this.treeViewDirs.Location = new System.Drawing.Point(12, 86);
             this.treeViewDirs.Name = "treeViewDirs";
-            treeNode1.Name = "AllDocuments";
-            treeNode1.Text = "All Documents";
-            treeNode2.Name = "RecentlyAdded";
-            treeNode2.Text = "Recently Added";
-            treeNode3.Name = "RecentlyRead";
-            treeNode3.Text = "Recently Read";
-            treeNode4.Name = "Favorites";
-            treeNode4.Text = "Favorites";
-            treeNode5.Name = "Authors";
-            treeNode5.Text = "Author(s)";
-            treeNode6.Name = "Unsorted";
-            treeNode6.Text = "Unsorted";
-            treeNode7.Name = "CustomDirs";
-            treeNode7.Text = "Custom Directories";
+            treeNode15.Name = "AllDocuments";
+            treeNode15.Text = "All Documents";
+            treeNode16.Name = "RecentlyAdded";
+            treeNode16.Text = "Recently Added";
+            treeNode17.Name = "RecentlyRead";
+            treeNode17.Text = "Recently Read";
+            treeNode18.Name = "Favorites";
+            treeNode18.Text = "Favorites";
+            treeNode19.Name = "Authors";
+            treeNode19.Text = "Author(s)";
+            treeNode20.Name = "Unsorted";
+            treeNode20.Text = "Unsorted";
+            treeNode21.Name = "CustomDirs";
+            treeNode21.Text = "Custom Directories";
             this.treeViewDirs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4,
-            treeNode5,
-            treeNode6,
-            treeNode7});
+            treeNode15,
+            treeNode16,
+            treeNode17,
+            treeNode18,
+            treeNode19,
+            treeNode20,
+            treeNode21});
             this.treeViewDirs.Size = new System.Drawing.Size(208, 377);
             this.treeViewDirs.TabIndex = 1;
             this.treeViewDirs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewDirs_AfterSelect);
+            this.treeViewDirs.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeViewDirs_DragDrop);
+            this.treeViewDirs.DragEnter += new System.Windows.Forms.DragEventHandler(this.treeViewDirs_DragEnter);
             this.treeViewDirs.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeViewDirs_MouseClick);
             // 
             // listViewDocs
             // 
+            this.listViewDocs.AllowDrop = true;
             this.listViewDocs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -264,6 +268,7 @@
             this.listViewDocs.TabIndex = 1;
             this.listViewDocs.UseCompatibleStateImageBehavior = false;
             this.listViewDocs.View = System.Windows.Forms.View.Details;
+            this.listViewDocs.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewDocs_ItemDrag);
             this.listViewDocs.SelectedIndexChanged += new System.EventHandler(this.listViewDocs_SelectedIndexChanged);
             this.listViewDocs.Click += new System.EventHandler(this.listViewDocs_Click);
             this.listViewDocs.DoubleClick += new System.EventHandler(this.listViewDocs_DoubleClick);
@@ -677,6 +682,7 @@
             // 
             // DocumentManager
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(982, 473);
@@ -696,6 +702,8 @@
             this.Name = "DocumentManager";
             this.Text = "DocumentManager";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DocumentManager_FormClosed);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.DocumentManager_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DocumentManager_DragEnter);
             this.menuStripMain.ResumeLayout(false);
             this.menuStripMain.PerformLayout();
             this.Notes.ResumeLayout(false);
