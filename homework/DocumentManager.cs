@@ -40,12 +40,12 @@ namespace homework
         private void generateCustomVDirs()
         {
             VDirs allVDirs = dbm.getVDirs();
-            treeViewDirs.Nodes[6].Nodes.Clear();
+            treeViewDirs.Nodes[7].Nodes.Clear();
             foreach (VDirs actualItem in allVDirs.Subdirs)
             {
                 TreeNode tn = new TreeNode(actualItem.Name, generateCustomVDirsRecursive(actualItem));
                 tn.Tag = actualItem;
-                treeViewDirs.Nodes[6].Nodes.Add(tn);
+                treeViewDirs.Nodes[7].Nodes.Add(tn);
             }
         }
 
@@ -122,11 +122,11 @@ namespace homework
                 {
                     files = dbm.getAllFilesWhichAreNotInADir();
                 }
-                else if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("6"))
+                else if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("7"))
                 {
                     files = new List<Files>();
                 }
-                else if (rtn.Index.ToString().Equals("6"))
+                else if (rtn.Index.ToString().Equals("7"))
                 {
                     files = dbm.getAllFilesFromDir(((VDirs)selected.Tag).Id);
                 }
@@ -346,8 +346,8 @@ namespace homework
         {
             List<VDirs> fullPaths = new List<VDirs>();
 
-            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[6].Text, -1, treeViewDirs.Nodes[6].FullPath));
-            getAllFullPath(treeViewDirs.Nodes[6], ref fullPaths);
+            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[7].Text, -1, treeViewDirs.Nodes[7].FullPath));
+            getAllFullPath(treeViewDirs.Nodes[7], ref fullPaths);
 
             NewVDir nvdw = new NewVDir(fullPaths.ToArray());
             if (nvdw.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -393,8 +393,8 @@ namespace homework
         {
             List<VDirs> fullPaths = new List<VDirs>();
 
-            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[6].Text, -1, treeViewDirs.Nodes[6].FullPath));
-            getAllFullPath(treeViewDirs.Nodes[6], ref fullPaths);
+            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[7].Text, -1, treeViewDirs.Nodes[7].FullPath));
+            getAllFullPath(treeViewDirs.Nodes[7], ref fullPaths);
 
             VDirs vds = (VDirs)treeViewDirs.SelectedNode.Tag;
             vds.FullPath = treeViewDirs.SelectedNode.FullPath;
@@ -412,8 +412,8 @@ namespace homework
         {
             List<VDirs> fullPaths = new List<VDirs>();
 
-            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[6].Text, -1, treeViewDirs.Nodes[6].FullPath));
-            getAllFullPath(treeViewDirs.Nodes[6], ref fullPaths);
+            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[7].Text, -1, treeViewDirs.Nodes[7].FullPath));
+            getAllFullPath(treeViewDirs.Nodes[7], ref fullPaths);
 
             VDirs vds = (VDirs)treeViewDirs.SelectedNode.Tag;
             vds.FullPath = treeViewDirs.SelectedNode.FullPath;
@@ -487,7 +487,7 @@ namespace homework
                 List<VDirs> fullPaths = new List<VDirs>();
 
                 fullPaths.Add(new VDirs(-1, "No directory", -1, "<<No directory>>"));
-                getAllFullPath(treeViewDirs.Nodes[6], ref fullPaths);
+                getAllFullPath(treeViewDirs.Nodes[7], ref fullPaths);
 
                 Files selectedFile = ((Files)listViewDocs.SelectedItems[0].Tag);
                 VDirs[] fullPathsArray = fullPaths.ToArray();
@@ -670,6 +670,10 @@ namespace homework
             {
                 e.Effect = DragDropEffects.Move;
             }
+            else
+            {
+                DocumentManager_DragEnter(sender, e);
+            }
         }
 
         private void treeViewDirs_DragDrop(object sender, DragEventArgs e)
@@ -683,7 +687,7 @@ namespace homework
                 if (DestinationNode != null)
                 {
                     TreeNode rtn = FindRootNode(DestinationNode);
-                    if (rtn.Index == 6 && DestinationNode.Level > 0)
+                    if (rtn.Index == 7 && DestinationNode.Level > 0)
                     {
                         foreach (ListViewItem item in listViewDocs.SelectedItems)
                         {
@@ -703,6 +707,10 @@ namespace homework
                     // If there's no treeView item.
                     MessageBox.Show("You need to drop into a Custom Directory's chield!");
                 }
+            }
+            else
+            {
+                DocumentManager_DragDrop(sender, e);
             }
         }
     }

@@ -616,12 +616,18 @@ namespace homework
                 SQLiteDataReader sqldr = sqlc.ExecuteReader();
                 using (var cmd = dbConnection.CreateCommand())
                 {
-                    cmd.CommandText = "DELETE FROM vdirs WHERE id = $id;";
-
-                    while(sqldr.Read())
+                    cmd.CommandText = "UPDATE files SET vdirs_id = NULL WHERE vdirs_id = $vdirs_id";
+                    using (var cmd2 = dbConnection.CreateCommand())
                     {
-                        cmd.Parameters.AddWithValue("$id", Convert.ToString(sqldr["id"]));
-                        cmd.ExecuteNonQuery();
+                        cmd2.CommandText = "DELETE FROM vdirs WHERE id = $id;";
+
+                        while (sqldr.Read())
+                        {
+                            cmd.Parameters.AddWithValue("$vdirs_id", Convert.ToString(sqldr["id"]));
+                            cmd.ExecuteNonQuery();
+                            cmd2.Parameters.AddWithValue("$id", Convert.ToString(sqldr["id"]));
+                            cmd2.ExecuteNonQuery();
+                        }
                     }
                 }
                 transaction.Commit();
