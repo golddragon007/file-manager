@@ -689,11 +689,8 @@ namespace homework
                 }
 
                 string[] linkedTagsDiff = new string[0];
-                if (existLinkedTagsName.Count > 0)
-                {
-                    // Gets deleted and new tags.
-                    linkedTagsDiff = tags.Except(existLinkedTagsName.ToArray()).ToArray(); 
-                }
+                // Gets deleted and new tags.
+                linkedTagsDiff = tags.Except(existLinkedTagsName.ToArray()).ToArray(); 
 
                 if (existLinkedTagsId.Count > 0)
                 {
@@ -704,6 +701,15 @@ namespace homework
                                     tags_id NOT IN ({tags_id});", dbConnection);
                     sqlcdFileTag.Parameters.AddWithValue("$files_id", fi.Id);
                     sqlcdFileTag.AddArrayParameters("tags_id", existLinkedTagsId.ToArray());
+                    sqlcdFileTag.ExecuteNonQuery(); 
+                }
+                else
+                {
+                    // Delete all tags, if there's no match the previous ones.
+                    SQLiteCommand sqlcdFileTag = new SQLiteCommand(@"DELETE  
+                            FROM    file_tag
+                            WHERE   files_id = $files_id;", dbConnection);
+                    sqlcdFileTag.Parameters.AddWithValue("$files_id", fi.Id);
                     sqlcdFileTag.ExecuteNonQuery(); 
                 }
 
@@ -765,15 +771,12 @@ namespace homework
                                     );", dbConnection);
                 sqlcd.ExecuteNonQuery();
 
-                SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET title = $title, author = $author, year = $year, doi = $doi, " 
-    //                                                    + " tags = $tags,"            //TODO
-                                                        + " favorite = $favorite WHERE id = $id", dbConnection);
+                SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET title = $title, author = $author, year = $year, doi = $doi, favorite = $favorite WHERE id = $id", dbConnection);
                 sqlc.Parameters.AddWithValue("$id", fi.Id);
                 sqlc.Parameters.AddWithValue("$title", fi.Title);
                 sqlc.Parameters.AddWithValue("$author", fi.Author);
                 sqlc.Parameters.AddWithValue("$year", fi.Year);
                 sqlc.Parameters.AddWithValue("$doi", fi.Doi);
-    //            sqlc.Parameters.AddWithValue("$tags", fi.Tags);   //TODO
                 sqlc.Parameters.AddWithValue("$favorite", fi.Favorite);
                 sqlc.ExecuteNonQuery();
 
