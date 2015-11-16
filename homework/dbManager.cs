@@ -304,6 +304,41 @@ namespace homework
             return files;
         }
 
+        // Returns a list those Files which has the defined tag.
+        public List<Files> getAllFilesByTag(int tagId)
+        {
+            List<Files> files = new List<Files>();
+
+            SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
+	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
+                    WHERE ft.'tags_id' = $tags_id
+	                GROUP BY f.title", dbConnection);
+            sqlc.Parameters.AddWithValue("$tags_id", tagId);
+            SQLiteDataReader sqldr = sqlc.ExecuteReader();
+            while (sqldr.Read())
+            {
+                // Do not use sqldr["id"].toString() because it won't work and kills the program!
+                files.Add(new Files(
+                    Convert.ToInt32(sqldr["id"]),
+                    Convert.ToString(sqldr["title"]),
+                    Convert.ToString(sqldr["author"]),
+                    Convert.ToString(sqldr["year"]),
+                    Convert.ToString(sqldr["doi"]),
+                    Convert.ToString(sqldr["vdirs_id"]),
+                    Convert.ToBoolean(sqldr["favorite"]),
+                    Convert.ToString(sqldr["type"]),
+                    Convert.ToString(sqldr["tags_name"]),
+                    Convert.ToString(sqldr["note"]),
+                    Convert.ToString(sqldr["location"]),
+                    Convert.ToString(sqldr["added"]),
+                    Convert.ToString(sqldr["rread"])
+                    ));
+            }
+
+            return files;
+        }
+
         // Get allowed file extensions by typeId.
         public string getFileExtensions(int typeId)
         {
@@ -657,6 +692,21 @@ namespace homework
             sqlc.Parameters.AddWithValue("$id", fileId);
             sqlc.Parameters.AddWithValue("$vdirs_id", (dirId == -1 ? null : dirId.ToString()));
             sqlc.ExecuteNonQuery();
+        }
+
+        //Get All Tags.
+        public List<Tags> getTags()
+        {
+            List<Tags> tags = new List<Tags>();
+
+            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM tags ORDER BY name", dbConnection);
+            SQLiteDataReader sqldr = sqlc.ExecuteReader();
+            while (sqldr.Read())
+            {
+                tags.Add(new Tags(Convert.ToInt32(sqldr["id"]), Convert.ToString(sqldr["name"])));
+            }
+
+            return tags;
         }
 
         //Save modified file record

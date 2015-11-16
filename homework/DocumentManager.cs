@@ -21,10 +21,16 @@ namespace homework
         Boolean editable;
         Files displayedFile;
         int selectedFileType;
+        private ListViewColumnSorter lvwColumnSorter;
 
         public DocumentManager()
         {
             InitializeComponent();
+
+            // Create an instance of a ListView column sorter and assign it 
+            // to the ListView control.
+            lvwColumnSorter = new ListViewColumnSorter();
+            this.listViewDocs.ListViewItemSorter = lvwColumnSorter;
 
             dbm = new dbManager("catalog.fmdb");
             editable = false;
@@ -34,6 +40,21 @@ namespace homework
             treeViewDirs.SelectedNode = treeViewDirs.Nodes[0];
             listViewRefresh();
             generateCustomVDirs();
+            refreshTags();
+        }
+
+        // Refreshing tags in treeview.
+        private void refreshTags()
+        {
+            List<Tags> tags = dbm.getTags();
+            treeViewDirs.Nodes[6].Nodes.Clear();
+
+            foreach (Tags tag in tags)
+            {
+                TreeNode tn = new TreeNode(tag.Name);
+                tn.Tag = tag;
+                treeViewDirs.Nodes[6].Nodes.Add(tn);
+            }
         }
 
         // Build up the Custom dirs.
@@ -122,9 +143,17 @@ namespace homework
                 {
                     files = dbm.getAllFilesWhichAreNotInADir();
                 }
+                else if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("6"))
+                {
+                    files = new List<Files>();
+                }
                 else if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("7"))
                 {
                     files = new List<Files>();
+                }
+                else if (rtn.Index.ToString().Equals("6"))
+                {
+                    files = dbm.getAllFilesByTag(((Tags)selected.Tag).Id);
                 }
                 else if (rtn.Index.ToString().Equals("7"))
                 {
@@ -552,6 +581,7 @@ namespace homework
                 displayedFile.Tags = textBoxTags.Text;
                 displayedFile.Favorite = checkBoxFavourite.Checked;
                 dbm.saveModifiedFileRecords(displayedFile);
+                refreshTags();
             }
             else
             {
@@ -712,6 +742,32 @@ namespace homework
             {
                 DocumentManager_DragDrop(sender, e);
             }
+        }
+
+        private void listViewDocs_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            // Determine if clicked column is already the column that is being sorted.
+            if (e.Column == lvwColumnSorter.SortColumn)
+            {
+                // Reverse the current sort direction for this column.
+                if (lvwColumnSorter.Order == SortOrder.Ascending)
+                {
+                    lvwColumnSorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    lvwColumnSorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                // Set the column number that is to be sorted; default to ascending.
+                lvwColumnSorter.SortColumn = e.Column;
+                lvwColumnSorter.Order = SortOrder.Ascending;
+            }
+
+            // Perform the sort with these new sort options.
+            this.listViewDocs.Sort();
         }
     }
 }

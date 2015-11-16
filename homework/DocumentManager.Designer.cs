@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode41 = new System.Windows.Forms.TreeNode("All Documents");
-            System.Windows.Forms.TreeNode treeNode42 = new System.Windows.Forms.TreeNode("Recently Added");
-            System.Windows.Forms.TreeNode treeNode43 = new System.Windows.Forms.TreeNode("Recently Read");
-            System.Windows.Forms.TreeNode treeNode44 = new System.Windows.Forms.TreeNode("Favorites");
-            System.Windows.Forms.TreeNode treeNode45 = new System.Windows.Forms.TreeNode("Author(s)");
-            System.Windows.Forms.TreeNode treeNode46 = new System.Windows.Forms.TreeNode("Unsorted");
-            System.Windows.Forms.TreeNode treeNode47 = new System.Windows.Forms.TreeNode("Tags");
-            System.Windows.Forms.TreeNode treeNode48 = new System.Windows.Forms.TreeNode("Custom Directories");
+            System.Windows.Forms.TreeNode treeNode65 = new System.Windows.Forms.TreeNode("All Documents");
+            System.Windows.Forms.TreeNode treeNode66 = new System.Windows.Forms.TreeNode("Recently Added");
+            System.Windows.Forms.TreeNode treeNode67 = new System.Windows.Forms.TreeNode("Recently Read");
+            System.Windows.Forms.TreeNode treeNode68 = new System.Windows.Forms.TreeNode("Favorites");
+            System.Windows.Forms.TreeNode treeNode69 = new System.Windows.Forms.TreeNode("Author(s)");
+            System.Windows.Forms.TreeNode treeNode70 = new System.Windows.Forms.TreeNode("Unsorted");
+            System.Windows.Forms.TreeNode treeNode71 = new System.Windows.Forms.TreeNode("Tags");
+            System.Windows.Forms.TreeNode treeNode72 = new System.Windows.Forms.TreeNode("Custom Directories");
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addDictionaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -219,31 +219,31 @@
             this.treeViewDirs.HideSelection = false;
             this.treeViewDirs.Location = new System.Drawing.Point(12, 86);
             this.treeViewDirs.Name = "treeViewDirs";
-            treeNode41.Name = "AllDocuments";
-            treeNode41.Text = "All Documents";
-            treeNode42.Name = "RecentlyAdded";
-            treeNode42.Text = "Recently Added";
-            treeNode43.Name = "RecentlyRead";
-            treeNode43.Text = "Recently Read";
-            treeNode44.Name = "Favorites";
-            treeNode44.Text = "Favorites";
-            treeNode45.Name = "Authors";
-            treeNode45.Text = "Author(s)";
-            treeNode46.Name = "Unsorted";
-            treeNode46.Text = "Unsorted";
-            treeNode47.Name = "Tags";
-            treeNode47.Text = "Tags";
-            treeNode48.Name = "CustomDirs";
-            treeNode48.Text = "Custom Directories";
+            treeNode65.Name = "AllDocuments";
+            treeNode65.Text = "All Documents";
+            treeNode66.Name = "RecentlyAdded";
+            treeNode66.Text = "Recently Added";
+            treeNode67.Name = "RecentlyRead";
+            treeNode67.Text = "Recently Read";
+            treeNode68.Name = "Favorites";
+            treeNode68.Text = "Favorites";
+            treeNode69.Name = "Authors";
+            treeNode69.Text = "Author(s)";
+            treeNode70.Name = "Unsorted";
+            treeNode70.Text = "Unsorted";
+            treeNode71.Name = "Tags";
+            treeNode71.Text = "Tags";
+            treeNode72.Name = "CustomDirs";
+            treeNode72.Text = "Custom Directories";
             this.treeViewDirs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode41,
-            treeNode42,
-            treeNode43,
-            treeNode44,
-            treeNode45,
-            treeNode46,
-            treeNode47,
-            treeNode48});
+            treeNode65,
+            treeNode66,
+            treeNode67,
+            treeNode68,
+            treeNode69,
+            treeNode70,
+            treeNode71,
+            treeNode72});
             this.treeViewDirs.Size = new System.Drawing.Size(208, 377);
             this.treeViewDirs.TabIndex = 1;
             this.treeViewDirs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewDirs_AfterSelect);
@@ -273,6 +273,7 @@
             this.listViewDocs.TabIndex = 1;
             this.listViewDocs.UseCompatibleStateImageBehavior = false;
             this.listViewDocs.View = System.Windows.Forms.View.Details;
+            this.listViewDocs.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewDocs_ColumnClick);
             this.listViewDocs.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewDocs_ItemDrag);
             this.listViewDocs.SelectedIndexChanged += new System.EventHandler(this.listViewDocs_SelectedIndexChanged);
             this.listViewDocs.Click += new System.EventHandler(this.listViewDocs_Click);
