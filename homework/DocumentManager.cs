@@ -20,6 +20,7 @@ namespace homework
         dbManager dbm;
         Boolean editable;
         Files displayedFile;
+        int selectedFileType;
 
         public DocumentManager()
         {
@@ -27,6 +28,8 @@ namespace homework
 
             dbm = new dbManager("catalog.fmdb");
             editable = false;
+
+            this.selectedFileType = dbm.getSelectedFileTypeExtensions();
 
             treeViewDirs.SelectedNode = treeViewDirs.Nodes[0];
             listViewRefresh();
@@ -152,7 +155,7 @@ namespace homework
 
         private void buttonAddFile_Click(object sender, EventArgs e)
         {
-            string ext = dbm.getFileExtensions();
+            string ext = dbm.getFileExtensions(selectedFileType);
 
             string[] extexp = ext.Split(',');
 
@@ -572,6 +575,18 @@ namespace homework
             textBoxDOI.Text = displayedFile.Doi;
             textBoxTags.Text = displayedFile.Tags;
             checkBoxFavourite.Checked = displayedFile.Favorite;
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings sw = new Settings(selectedFileType, dbm.getFileExtensions(6));
+
+            if (sw.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                selectedFileType = sw.Selected;
+                dbm.setSelectedFileTypeExtensions(selectedFileType);
+                dbm.setCustomFileExtensions(sw.CustomTypes);
+            }
         }
     }
 }

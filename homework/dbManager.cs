@@ -50,8 +50,32 @@ namespace homework
                 sqlc = new SQLiteCommand("CREATE TABLE 'settings' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL  UNIQUE, 'name' VARCHAR NOT NULL, 'value' VARCHAR NOT NULL)", dbConnection);
                 sqlc.ExecuteNonQuery();
                 sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (1, $name, $value)", dbConnection);
-                sqlc.Parameters.AddWithValue("$name", "Allowed extensions");
+                sqlc.Parameters.AddWithValue("$name", "Document extensions");
                 sqlc.Parameters.AddWithValue("$value", "doc,docx,xls,xlsx,pdf,txt,htm,html");
+                sqlc.ExecuteNonQuery();
+                sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (2, $name, $value)", dbConnection);
+                sqlc.Parameters.AddWithValue("$name", "Audio extensions");
+                sqlc.Parameters.AddWithValue("$value", "jpg,jpeg,bmp,png,gif");
+                sqlc.ExecuteNonQuery();
+                sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (3, $name, $value)", dbConnection);
+                sqlc.Parameters.AddWithValue("$name", "Audio extensions");
+                sqlc.Parameters.AddWithValue("$value", "mp3,flac,aac,ac3,wav,ogg,wma,mid");
+                sqlc.ExecuteNonQuery();
+                sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (4, $name, $value)", dbConnection);
+                sqlc.Parameters.AddWithValue("$name", "Video extensions");
+                sqlc.Parameters.AddWithValue("$value", "mkv,wmv,mp4,flv,3gp,avi,divx,mpg,mpeg");
+                sqlc.ExecuteNonQuery();
+                sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (5, $name, $value)", dbConnection);
+                sqlc.Parameters.AddWithValue("$name", "Executeable extensions");
+                sqlc.Parameters.AddWithValue("$value", "exe,msi,com");
+                sqlc.ExecuteNonQuery();
+                sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (6, $name, $value)", dbConnection);
+                sqlc.Parameters.AddWithValue("$name", "Custom extensions");
+                sqlc.Parameters.AddWithValue("$value", "");
+                sqlc.ExecuteNonQuery();
+                sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (7, $name, $value)", dbConnection);
+                sqlc.Parameters.AddWithValue("$name", "Selected file extensions");
+                sqlc.Parameters.AddWithValue("$value", "1");
                 sqlc.ExecuteNonQuery();
             }
         }
@@ -280,14 +304,41 @@ namespace homework
             return files;
         }
 
-        // Get allowed file extensions.
-        public string getFileExtensions()
+        // Get allowed file extensions by typeId.
+        public string getFileExtensions(int typeId)
         {
-            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM settings WHERE id = 1", dbConnection);
+            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM settings WHERE id = $id", dbConnection);
+            sqlc.Parameters.AddWithValue("$id", typeId);
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             sqldr.Read();
 
             return Convert.ToString(sqldr["value"]);
+        }
+
+        // Gets the selected file type.
+        public int getSelectedFileTypeExtensions()
+        {
+            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM settings WHERE id = 7", dbConnection);
+            SQLiteDataReader sqldr = sqlc.ExecuteReader();
+            sqldr.Read();
+
+            return Convert.ToInt32(sqldr["value"]);
+        }
+
+        // Sets the selected file type.
+        public void setSelectedFileTypeExtensions(int typeId)
+        {
+            SQLiteCommand sqlc = new SQLiteCommand("UPDATE settings SET value = $value WHERE id = 7", dbConnection);
+            sqlc.Parameters.AddWithValue("$value", typeId);
+            sqlc.ExecuteNonQuery();
+        }
+
+        // Sets the custom file extensions.
+        public void setCustomFileExtensions(string customExtensions)
+        {
+            SQLiteCommand sqlc = new SQLiteCommand("UPDATE settings SET value = $value WHERE id = 6", dbConnection);
+            sqlc.Parameters.AddWithValue("$value", customExtensions);
+            sqlc.ExecuteNonQuery();
         }
 
         // Add multiple files.
