@@ -80,7 +80,7 @@ namespace homework
             }
         }
 
-        // Close db conn. use when you exit from the app. (todo)
+        // Close db conn. use when you exit from the app.
         public void closeDbConn()
         {
             dbConnection.Close();

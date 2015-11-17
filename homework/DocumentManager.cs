@@ -27,20 +27,34 @@ namespace homework
         {
             InitializeComponent();
 
-            // Create an instance of a ListView column sorter and assign it 
-            // to the ListView control.
-            lvwColumnSorter = new ListViewColumnSorter();
-            this.listViewDocs.ListViewItemSorter = lvwColumnSorter;
+            initializeProgramStartup();
+        }
 
-            dbm = new dbManager("catalog.fmdb");
-            editable = false;
+        private void initializeProgramStartup()
+        {
+            NewOrExistCatalog noecw = new NewOrExistCatalog();
+            var result = noecw.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.Abort || result == System.Windows.Forms.DialogResult.Cancel)
+            {
+                Environment.Exit(0);
+            }
+            else if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                // Create an instance of a ListView column sorter and assign it 
+                // to the ListView control.
+                lvwColumnSorter = new ListViewColumnSorter();
+                this.listViewDocs.ListViewItemSorter = lvwColumnSorter;
 
-            this.selectedFileType = dbm.getSelectedFileTypeExtensions();
+                dbm = new dbManager(noecw.Path);
+                editable = false;
 
-            treeViewDirs.SelectedNode = treeViewDirs.Nodes[0];
-            listViewRefresh();
-            generateCustomVDirs();
-            refreshTags();
+                this.selectedFileType = dbm.getSelectedFileTypeExtensions();
+
+                treeViewDirs.SelectedNode = treeViewDirs.Nodes[0];
+                listViewRefresh();
+                generateCustomVDirs();
+                refreshTags();
+            }
         }
 
         // Refreshing tags in treeview.
@@ -774,6 +788,18 @@ namespace homework
         {
             About aw = new About();
             aw.ShowDialog();
+        }
+
+        private void openAnotherCatalogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dbm.closeDbConn();
+
+            initializeProgramStartup();
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
         }
     }
 }

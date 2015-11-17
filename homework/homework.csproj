@@ -87,6 +87,12 @@
     <Compile Include="MoveVDirs.Designer.cs">
       <DependentUpon>MoveVDirs.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewOrExistCatalog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewOrExistCatalog.Designer.cs">
+      <DependentUpon>NewOrExistCatalog.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewVDir.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,6 +127,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MoveVDirs.resx">
       <DependentUpon>MoveVDirs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewOrExistCatalog.resx">
+      <DependentUpon>NewOrExistCatalog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewVDir.resx">
       <DependentUpon>NewVDir.cs</DependentUpon>
