@@ -60,6 +60,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
     <Compile Include="AdvancedSearch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +81,7 @@
       <DependentUpon>DocumentManager.cs</DependentUpon>
     </Compile>
     <Compile Include="Files.cs" />
+    <Compile Include="ListViewColumnSorter.cs" />
     <Compile Include="MoveFilesToDir.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -86,6 +93,12 @@
     </Compile>
     <Compile Include="MoveVDirs.Designer.cs">
       <DependentUpon>MoveVDirs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewOrExistCatalog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewOrExistCatalog.Designer.cs">
+      <DependentUpon>NewOrExistCatalog.cs</DependentUpon>
     </Compile>
     <Compile Include="NewVDir.cs">
       <SubType>Form</SubType>
@@ -101,8 +114,18 @@
     <Compile Include="RenameVDir.Designer.cs">
       <DependentUpon>RenameVDir.cs</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settings.Designer.cs">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </Compile>
     <Compile Include="SqlCommandExt.cs" />
+    <Compile Include="Tags.cs" />
     <Compile Include="VDirs.cs" />
+    <EmbeddedResource Include="About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AdvancedSearch.resx">
       <DependentUpon>AdvancedSearch.cs</DependentUpon>
     </EmbeddedResource>
@@ -114,6 +137,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MoveVDirs.resx">
       <DependentUpon>MoveVDirs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewOrExistCatalog.resx">
+      <DependentUpon>NewOrExistCatalog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewVDir.resx">
       <DependentUpon>NewVDir.cs</DependentUpon>
@@ -129,6 +155,9 @@
     </Compile>
     <EmbeddedResource Include="RenameVDir.resx">
       <DependentUpon>RenameVDir.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings.resx">
+      <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

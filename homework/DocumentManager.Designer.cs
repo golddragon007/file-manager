@@ -29,16 +29,18 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("All Documents");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Recently Added");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Recently Read");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Favorites");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Author(s)");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Unsorted");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Custom Directories");
+            System.Windows.Forms.TreeNode treeNode49 = new System.Windows.Forms.TreeNode("All Documents");
+            System.Windows.Forms.TreeNode treeNode50 = new System.Windows.Forms.TreeNode("Recently Added");
+            System.Windows.Forms.TreeNode treeNode51 = new System.Windows.Forms.TreeNode("Recently Read");
+            System.Windows.Forms.TreeNode treeNode52 = new System.Windows.Forms.TreeNode("Favorites");
+            System.Windows.Forms.TreeNode treeNode53 = new System.Windows.Forms.TreeNode("Author(s)");
+            System.Windows.Forms.TreeNode treeNode54 = new System.Windows.Forms.TreeNode("Unsorted");
+            System.Windows.Forms.TreeNode treeNode55 = new System.Windows.Forms.TreeNode("Tags");
+            System.Windows.Forms.TreeNode treeNode56 = new System.Windows.Forms.TreeNode("Custom Directories");
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addDictionaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createDiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,6 +101,12 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.openAnotherCatalogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.Notes.SuspendLayout();
             this.Details.SuspendLayout();
@@ -110,9 +118,16 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openAnotherCatalogToolStripMenuItem,
+            this.toolStripSeparator5,
             this.addFileToolStripMenuItem,
             this.addDictionaryToolStripMenuItem,
-            this.settingsToolStripMenuItem});
+            this.toolStripSeparator4,
+            this.createDiToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.settingsToolStripMenuItem,
+            this.toolStripSeparator6,
+            this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -120,22 +135,33 @@
             // addFileToolStripMenuItem
             // 
             this.addFileToolStripMenuItem.Name = "addFileToolStripMenuItem";
-            this.addFileToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.addFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.addFileToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
             this.addFileToolStripMenuItem.Text = "Add File";
             this.addFileToolStripMenuItem.Click += new System.EventHandler(this.buttonAddFile_Click);
             // 
             // addDictionaryToolStripMenuItem
             // 
             this.addDictionaryToolStripMenuItem.Name = "addDictionaryToolStripMenuItem";
-            this.addDictionaryToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.addDictionaryToolStripMenuItem.Text = "Add Dictionary";
-            this.addDictionaryToolStripMenuItem.Click += new System.EventHandler(this.buttonCreateFolder_Click);
+            this.addDictionaryToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
+            this.addDictionaryToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.addDictionaryToolStripMenuItem.Text = "Add Folder";
+            // 
+            // createDiToolStripMenuItem
+            // 
+            this.createDiToolStripMenuItem.Name = "createDiToolStripMenuItem";
+            this.createDiToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.createDiToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.createDiToolStripMenuItem.Text = "Create Virtual Folder";
+            this.createDiToolStripMenuItem.Click += new System.EventHandler(this.buttonCreateFolder_Click);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.settingsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // menuStripMain
             // 
@@ -160,6 +186,7 @@
             // helpToolStripMenuItem1
             // 
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
+            this.helpToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F1;
             this.helpToolStripMenuItem1.Size = new System.Drawing.Size(216, 22);
             this.helpToolStripMenuItem1.Text = "Help";
             // 
@@ -168,6 +195,7 @@
             this.aboutDocumentManagerToolStripMenuItem.Name = "aboutDocumentManagerToolStripMenuItem";
             this.aboutDocumentManagerToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
             this.aboutDocumentManagerToolStripMenuItem.Text = "About Document Manager";
+            this.aboutDocumentManagerToolStripMenuItem.Click += new System.EventHandler(this.aboutDocumentManagerToolStripMenuItem_Click);
             // 
             // textBoxSimpleSearch
             // 
@@ -210,40 +238,47 @@
             // 
             // treeViewDirs
             // 
+            this.treeViewDirs.AllowDrop = true;
             this.treeViewDirs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treeViewDirs.HideSelection = false;
             this.treeViewDirs.Location = new System.Drawing.Point(12, 86);
             this.treeViewDirs.Name = "treeViewDirs";
-            treeNode1.Name = "AllDocuments";
-            treeNode1.Text = "All Documents";
-            treeNode2.Name = "RecentlyAdded";
-            treeNode2.Text = "Recently Added";
-            treeNode3.Name = "RecentlyRead";
-            treeNode3.Text = "Recently Read";
-            treeNode4.Name = "Favorites";
-            treeNode4.Text = "Favorites";
-            treeNode5.Name = "Authors";
-            treeNode5.Text = "Author(s)";
-            treeNode6.Name = "Unsorted";
-            treeNode6.Text = "Unsorted";
-            treeNode7.Name = "CustomDirs";
-            treeNode7.Text = "Custom Directories";
+            treeNode49.Name = "AllDocuments";
+            treeNode49.Text = "All Documents";
+            treeNode50.Name = "RecentlyAdded";
+            treeNode50.Text = "Recently Added";
+            treeNode51.Name = "RecentlyRead";
+            treeNode51.Text = "Recently Read";
+            treeNode52.Name = "Favorites";
+            treeNode52.Text = "Favorites";
+            treeNode53.Name = "Authors";
+            treeNode53.Text = "Author(s)";
+            treeNode54.Name = "Unsorted";
+            treeNode54.Text = "Unsorted";
+            treeNode55.Name = "Tags";
+            treeNode55.Text = "Tags";
+            treeNode56.Name = "CustomDirs";
+            treeNode56.Text = "Custom Directories";
             this.treeViewDirs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4,
-            treeNode5,
-            treeNode6,
-            treeNode7});
+            treeNode49,
+            treeNode50,
+            treeNode51,
+            treeNode52,
+            treeNode53,
+            treeNode54,
+            treeNode55,
+            treeNode56});
             this.treeViewDirs.Size = new System.Drawing.Size(208, 377);
             this.treeViewDirs.TabIndex = 1;
             this.treeViewDirs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewDirs_AfterSelect);
+            this.treeViewDirs.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeViewDirs_DragDrop);
+            this.treeViewDirs.DragEnter += new System.Windows.Forms.DragEventHandler(this.treeViewDirs_DragEnter);
             this.treeViewDirs.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeViewDirs_MouseClick);
             // 
             // listViewDocs
             // 
+            this.listViewDocs.AllowDrop = true;
             this.listViewDocs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -263,8 +298,12 @@
             this.listViewDocs.TabIndex = 1;
             this.listViewDocs.UseCompatibleStateImageBehavior = false;
             this.listViewDocs.View = System.Windows.Forms.View.Details;
+            this.listViewDocs.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewDocs_ColumnClick);
+            this.listViewDocs.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewDocs_ItemDrag);
             this.listViewDocs.SelectedIndexChanged += new System.EventHandler(this.listViewDocs_SelectedIndexChanged);
             this.listViewDocs.Click += new System.EventHandler(this.listViewDocs_Click);
+            this.listViewDocs.DragDrop += new System.Windows.Forms.DragEventHandler(this.DocumentManager_DragDrop);
+            this.listViewDocs.DragEnter += new System.Windows.Forms.DragEventHandler(this.DocumentManager_DragEnter);
             this.listViewDocs.DoubleClick += new System.EventHandler(this.listViewDocs_DoubleClick);
             this.listViewDocs.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listViewDocs_MouseClick);
             // 
@@ -561,7 +600,7 @@
             this.buttonAddDictionary.Name = "buttonAddDictionary";
             this.buttonAddDictionary.Size = new System.Drawing.Size(90, 23);
             this.buttonAddDictionary.TabIndex = 10;
-            this.buttonAddDictionary.Text = "Add Dictionary";
+            this.buttonAddDictionary.Text = "Add Folder";
             this.buttonAddDictionary.UseVisualStyleBackColor = true;
             // 
             // contextMenuStripDocList
@@ -599,6 +638,7 @@
             this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
             this.moveToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.moveToolStripMenuItem.Text = "Move";
+            this.moveToolStripMenuItem.Click += new System.EventHandler(this.buttonMove_Click);
             // 
             // removeToolStripMenuItem
             // 
@@ -675,8 +715,45 @@
             this.colapseAllToolStripMenuItem.Text = "Colapse all";
             this.colapseAllToolStripMenuItem.Click += new System.EventHandler(this.colapseAllToolStripMenuItem_Click);
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(178, 6);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(178, 6);
+            // 
+            // openAnotherCatalogToolStripMenuItem
+            // 
+            this.openAnotherCatalogToolStripMenuItem.Name = "openAnotherCatalogToolStripMenuItem";
+            this.openAnotherCatalogToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openAnotherCatalogToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.openAnotherCatalogToolStripMenuItem.Text = "Open Another Catalog";
+            this.openAnotherCatalogToolStripMenuItem.Click += new System.EventHandler(this.openAnotherCatalogToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(190, 6);
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(233, 6);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
             // DocumentManager
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(982, 473);
@@ -694,8 +771,10 @@
             this.MainMenuStrip = this.menuStripMain;
             this.MinimumSize = new System.Drawing.Size(998, 511);
             this.Name = "DocumentManager";
-            this.Text = "DocumentManager";
+            this.Text = "Document Manager";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DocumentManager_FormClosed);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.DocumentManager_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DocumentManager_DragEnter);
             this.menuStripMain.ResumeLayout(false);
             this.menuStripMain.PerformLayout();
             this.Notes.ResumeLayout(false);
@@ -775,6 +854,13 @@
         private System.Windows.Forms.ToolStripMenuItem addToFavoriteToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem renameDirToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createDiToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem openAnotherCatalogToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
     }
 }
 

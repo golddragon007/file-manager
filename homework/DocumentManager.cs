@@ -20,29 +20,67 @@ namespace homework
         dbManager dbm;
         Boolean editable;
         Files displayedFile;
+        int selectedFileType;
+        private ListViewColumnSorter lvwColumnSorter;
 
         public DocumentManager()
         {
             InitializeComponent();
 
-            dbm = new dbManager("catalog.fmdb");
-            editable = false;
+            initializeProgramStartup();
+        }
 
-            treeViewDirs.SelectedNode = treeViewDirs.Nodes[0];
-            listViewRefresh();
-            generateCustomVDirs();
+        private void initializeProgramStartup()
+        {
+            NewOrExistCatalog noecw = new NewOrExistCatalog();
+            var result = noecw.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.Abort || result == System.Windows.Forms.DialogResult.Cancel)
+            {
+                Environment.Exit(0);
+            }
+            else if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                // Create an instance of a ListView column sorter and assign it 
+                // to the ListView control.
+                lvwColumnSorter = new ListViewColumnSorter();
+                this.listViewDocs.ListViewItemSorter = lvwColumnSorter;
+
+                dbm = new dbManager(noecw.Path);
+                editable = false;
+
+                this.selectedFileType = dbm.getSelectedFileTypeExtensions();
+
+                treeViewDirs.SelectedNode = treeViewDirs.Nodes[0];
+                listViewRefresh();
+                generateCustomVDirs();
+                refreshTags();
+            }
+        }
+
+        // Refreshing tags in treeview.
+        private void refreshTags()
+        {
+            List<Tags> tags = dbm.getTags();
+            treeViewDirs.Nodes[6].Nodes.Clear();
+
+            foreach (Tags tag in tags)
+            {
+                TreeNode tn = new TreeNode(tag.Name);
+                tn.Tag = tag;
+                treeViewDirs.Nodes[6].Nodes.Add(tn);
+            }
         }
 
         // Build up the Custom dirs.
         private void generateCustomVDirs()
         {
             VDirs allVDirs = dbm.getVDirs();
-            treeViewDirs.Nodes[6].Nodes.Clear();
+            treeViewDirs.Nodes[7].Nodes.Clear();
             foreach (VDirs actualItem in allVDirs.Subdirs)
             {
                 TreeNode tn = new TreeNode(actualItem.Name, generateCustomVDirsRecursive(actualItem));
                 tn.Tag = actualItem;
-                treeViewDirs.Nodes[6].Nodes.Add(tn);
+                treeViewDirs.Nodes[7].Nodes.Add(tn);
             }
         }
 
@@ -123,7 +161,15 @@ namespace homework
                 {
                     files = new List<Files>();
                 }
+                else if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("7"))
+                {
+                    files = new List<Files>();
+                }
                 else if (rtn.Index.ToString().Equals("6"))
+                {
+                    files = dbm.getAllFilesByTag(((Tags)selected.Tag).Id);
+                }
+                else if (rtn.Index.ToString().Equals("7"))
                 {
                     files = dbm.getAllFilesFromDir(((VDirs)selected.Tag).Id);
                 }
@@ -152,7 +198,7 @@ namespace homework
 
         private void buttonAddFile_Click(object sender, EventArgs e)
         {
-            string ext = dbm.getFileExtensions();
+            string ext = dbm.getFileExtensions(selectedFileType);
 
             string[] extexp = ext.Split(',');
 
@@ -346,8 +392,8 @@ namespace homework
         {
             List<VDirs> fullPaths = new List<VDirs>();
 
-            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[6].Text, -1, treeViewDirs.Nodes[6].FullPath));
-            getAllFullPath(treeViewDirs.Nodes[6], ref fullPaths);
+            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[7].Text, -1, treeViewDirs.Nodes[7].FullPath));
+            getAllFullPath(treeViewDirs.Nodes[7], ref fullPaths);
 
             NewVDir nvdw = new NewVDir(fullPaths.ToArray());
             if (nvdw.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -393,8 +439,8 @@ namespace homework
         {
             List<VDirs> fullPaths = new List<VDirs>();
 
-            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[6].Text, -1, treeViewDirs.Nodes[6].FullPath));
-            getAllFullPath(treeViewDirs.Nodes[6], ref fullPaths);
+            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[7].Text, -1, treeViewDirs.Nodes[7].FullPath));
+            getAllFullPath(treeViewDirs.Nodes[7], ref fullPaths);
 
             VDirs vds = (VDirs)treeViewDirs.SelectedNode.Tag;
             vds.FullPath = treeViewDirs.SelectedNode.FullPath;
@@ -412,8 +458,8 @@ namespace homework
         {
             List<VDirs> fullPaths = new List<VDirs>();
 
-            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[6].Text, -1, treeViewDirs.Nodes[6].FullPath));
-            getAllFullPath(treeViewDirs.Nodes[6], ref fullPaths);
+            fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[7].Text, -1, treeViewDirs.Nodes[7].FullPath));
+            getAllFullPath(treeViewDirs.Nodes[7], ref fullPaths);
 
             VDirs vds = (VDirs)treeViewDirs.SelectedNode.Tag;
             vds.FullPath = treeViewDirs.SelectedNode.FullPath;
@@ -487,7 +533,7 @@ namespace homework
                 List<VDirs> fullPaths = new List<VDirs>();
 
                 fullPaths.Add(new VDirs(-1, "No directory", -1, "<<No directory>>"));
-                getAllFullPath(treeViewDirs.Nodes[6], ref fullPaths);
+                getAllFullPath(treeViewDirs.Nodes[7], ref fullPaths);
 
                 Files selectedFile = ((Files)listViewDocs.SelectedItems[0].Tag);
                 VDirs[] fullPathsArray = fullPaths.ToArray();
@@ -555,6 +601,7 @@ namespace homework
                 displayedFile.Note = textBoxNotes.Text;
                 displayedFile.Favorite = checkBoxFavourite.Checked;
                 dbm.saveModifiedFileRecords(displayedFile);
+                refreshTags();
             }
             else
             {
@@ -612,6 +659,187 @@ namespace homework
                     }
                 }
             }
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings sw = new Settings(selectedFileType, dbm.getFileExtensions(6));
+
+            if (sw.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                selectedFileType = sw.Selected;
+                dbm.setSelectedFileTypeExtensions(selectedFileType);
+                dbm.setCustomFileExtensions(sw.CustomTypes);
+            }
+        }
+
+        private void DocumentManager_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+        }
+
+        private void DocumentManager_DragDrop(object sender, DragEventArgs e)
+        {
+            List<string> paths = new List<string>();
+            List<string> pathsUseable = new List<string>();
+            
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            // Get all files/dirs which was dropped in the app
+            foreach (string file in files)
+            {
+                AddFileFromPaths(ref paths, file);
+            }
+
+            string fileTypes = dbm.getFileExtensions(selectedFileType);
+
+            string[] extexp = fileTypes.Split(',');
+
+            string ext = "";
+
+            foreach (string extItem in extexp)
+            {
+                ext += ";." + extItem.Trim();
+            }
+            ext += ";";
+
+            // Remove non used files.
+            foreach (string path in paths)
+            {
+                string fext = Path.GetExtension(path);
+                if (ext.Contains(";" + fext + ";"))
+                {
+                    pathsUseable.Add(path);
+                }
+            }
+
+            dbm.addFiles(pathsUseable.ToArray());
+            listViewRefresh();
+
+            paths.Clear();
+            pathsUseable.Clear();
+        }
+
+        // Recursive get all files from a directory.
+        private void AddFileFromPaths(ref List<string> paths, string fileOrDir)
+        {
+            if (File.Exists(fileOrDir))
+            {
+                paths.Add(fileOrDir);
+            }
+            else if (Directory.Exists(fileOrDir))
+            {
+                foreach (string dir in Directory.GetDirectories(fileOrDir))
+                {
+                    AddFileFromPaths(ref paths, dir);
+                }
+
+                foreach (string file in Directory.GetFiles(fileOrDir))
+                {
+                    paths.Add(file);
+                }
+            }
+        }
+
+        private void listViewDocs_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            DoDragDrop(e.Item, DragDropEffects.Move);
+        }
+
+        private void treeViewDirs_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(ListViewItem)))
+            {
+                e.Effect = DragDropEffects.Move;
+            }
+            else
+            {
+                DocumentManager_DragEnter(sender, e);
+            }
+        }
+
+        private void treeViewDirs_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(ListViewItem)))
+            {
+                /*var item = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
+                MessageBox.Show(item.Text);*/
+                Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
+                TreeNode DestinationNode = ((TreeView)sender).GetNodeAt(pt);
+                if (DestinationNode != null)
+                {
+                    TreeNode rtn = FindRootNode(DestinationNode);
+                    if (rtn.Index == 7 && DestinationNode.Level > 0)
+                    {
+                        foreach (ListViewItem item in listViewDocs.SelectedItems)
+                        {
+                            dbm.moveFileToDir(((Files)item.Tag).Id, ((VDirs)DestinationNode.Tag).Id);
+                        }
+
+                        listViewRefresh();
+                    }
+                    else
+                    {
+                        // If wrong treeView item.
+                        MessageBox.Show("You need to drop into a Custom Directory's chield!");
+                    }
+                }
+                else
+                {
+                    // If there's no treeView item.
+                    MessageBox.Show("You need to drop into a Custom Directory's chield!");
+                }
+            }
+            else
+            {
+                DocumentManager_DragDrop(sender, e);
+            }
+        }
+
+        private void listViewDocs_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            // Determine if clicked column is already the column that is being sorted.
+            if (e.Column == lvwColumnSorter.SortColumn)
+            {
+                // Reverse the current sort direction for this column.
+                if (lvwColumnSorter.Order == SortOrder.Ascending)
+                {
+                    lvwColumnSorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    lvwColumnSorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                // Set the column number that is to be sorted; default to ascending.
+                lvwColumnSorter.SortColumn = e.Column;
+                lvwColumnSorter.Order = SortOrder.Ascending;
+            }
+
+            // Perform the sort with these new sort options.
+            this.listViewDocs.Sort();
+        }
+
+        private void aboutDocumentManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            About aw = new About();
+            aw.ShowDialog();
+        }
+
+        private void openAnotherCatalogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dbm.closeDbConn();
+
+            initializeProgramStartup();
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
         }
     }
 }

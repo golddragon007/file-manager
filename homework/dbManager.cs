@@ -50,13 +50,37 @@ namespace homework
                 sqlc = new SQLiteCommand("CREATE TABLE 'settings' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL  UNIQUE, 'name' VARCHAR NOT NULL, 'value' VARCHAR NOT NULL)", dbConnection);
                 sqlc.ExecuteNonQuery();
                 sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (1, $name, $value)", dbConnection);
-                sqlc.Parameters.AddWithValue("$name", "Allowed extensions");
+                sqlc.Parameters.AddWithValue("$name", "Document extensions");
                 sqlc.Parameters.AddWithValue("$value", "doc,docx,xls,xlsx,pdf,txt,htm,html");
+                sqlc.ExecuteNonQuery();
+                sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (2, $name, $value)", dbConnection);
+                sqlc.Parameters.AddWithValue("$name", "Audio extensions");
+                sqlc.Parameters.AddWithValue("$value", "jpg,jpeg,bmp,png,gif");
+                sqlc.ExecuteNonQuery();
+                sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (3, $name, $value)", dbConnection);
+                sqlc.Parameters.AddWithValue("$name", "Audio extensions");
+                sqlc.Parameters.AddWithValue("$value", "mp3,flac,aac,ac3,wav,ogg,wma,mid");
+                sqlc.ExecuteNonQuery();
+                sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (4, $name, $value)", dbConnection);
+                sqlc.Parameters.AddWithValue("$name", "Video extensions");
+                sqlc.Parameters.AddWithValue("$value", "mkv,wmv,mp4,flv,3gp,avi,divx,mpg,mpeg");
+                sqlc.ExecuteNonQuery();
+                sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (5, $name, $value)", dbConnection);
+                sqlc.Parameters.AddWithValue("$name", "Executeable extensions");
+                sqlc.Parameters.AddWithValue("$value", "exe,msi,com");
+                sqlc.ExecuteNonQuery();
+                sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (6, $name, $value)", dbConnection);
+                sqlc.Parameters.AddWithValue("$name", "Custom extensions");
+                sqlc.Parameters.AddWithValue("$value", "");
+                sqlc.ExecuteNonQuery();
+                sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (7, $name, $value)", dbConnection);
+                sqlc.Parameters.AddWithValue("$name", "Selected file extensions");
+                sqlc.Parameters.AddWithValue("$value", "1");
                 sqlc.ExecuteNonQuery();
             }
         }
 
-        // Close db conn. use when you exit from the app. (todo)
+        // Close db conn. use when you exit from the app.
         public void closeDbConn()
         {
             dbConnection.Close();
@@ -280,14 +304,76 @@ namespace homework
             return files;
         }
 
-        // Get allowed file extensions.
-        public string getFileExtensions()
+        // Returns a list those Files which has the defined tag.
+        public List<Files> getAllFilesByTag(int tagId)
         {
-            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM settings WHERE id = 1", dbConnection);
+            List<Files> files = new List<Files>();
+
+            SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
+	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
+                    WHERE ft.'tags_id' = $tags_id
+	                GROUP BY f.title", dbConnection);
+            sqlc.Parameters.AddWithValue("$tags_id", tagId);
+            SQLiteDataReader sqldr = sqlc.ExecuteReader();
+            while (sqldr.Read())
+            {
+                // Do not use sqldr["id"].toString() because it won't work and kills the program!
+                files.Add(new Files(
+                    Convert.ToInt32(sqldr["id"]),
+                    Convert.ToString(sqldr["title"]),
+                    Convert.ToString(sqldr["author"]),
+                    Convert.ToString(sqldr["year"]),
+                    Convert.ToString(sqldr["doi"]),
+                    Convert.ToString(sqldr["vdirs_id"]),
+                    Convert.ToBoolean(sqldr["favorite"]),
+                    Convert.ToString(sqldr["type"]),
+                    Convert.ToString(sqldr["tags_name"]),
+                    Convert.ToString(sqldr["note"]),
+                    Convert.ToString(sqldr["location"]),
+                    Convert.ToString(sqldr["added"]),
+                    Convert.ToString(sqldr["rread"])
+                    ));
+            }
+
+            return files;
+        }
+
+        // Get allowed file extensions by typeId.
+        public string getFileExtensions(int typeId)
+        {
+            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM settings WHERE id = $id", dbConnection);
+            sqlc.Parameters.AddWithValue("$id", typeId);
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             sqldr.Read();
 
             return Convert.ToString(sqldr["value"]);
+        }
+
+        // Gets the selected file type.
+        public int getSelectedFileTypeExtensions()
+        {
+            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM settings WHERE id = 7", dbConnection);
+            SQLiteDataReader sqldr = sqlc.ExecuteReader();
+            sqldr.Read();
+
+            return Convert.ToInt32(sqldr["value"]);
+        }
+
+        // Sets the selected file type.
+        public void setSelectedFileTypeExtensions(int typeId)
+        {
+            SQLiteCommand sqlc = new SQLiteCommand("UPDATE settings SET value = $value WHERE id = 7", dbConnection);
+            sqlc.Parameters.AddWithValue("$value", typeId);
+            sqlc.ExecuteNonQuery();
+        }
+
+        // Sets the custom file extensions.
+        public void setCustomFileExtensions(string customExtensions)
+        {
+            SQLiteCommand sqlc = new SQLiteCommand("UPDATE settings SET value = $value WHERE id = 6", dbConnection);
+            sqlc.Parameters.AddWithValue("$value", customExtensions);
+            sqlc.ExecuteNonQuery();
         }
 
         // Add multiple files.
@@ -297,14 +383,26 @@ namespace homework
             {
                 using (var cmd = dbConnection.CreateCommand())
                 {
-                    cmd.CommandText = "INSERT INTO files (id, title, author, year, doi, favorite, type, note, location, rread) VALUES (NULL, $title, NULL, NULL, NULL, 0, $type, NULL, $location, NULL);";
-
-                    foreach (var filePath in filePaths)
+                    using (var cmd2 = dbConnection.CreateCommand())
                     {
-                        cmd.Parameters.AddWithValue("$title", Path.GetFileNameWithoutExtension(filePath));
-                        cmd.Parameters.AddWithValue("$type", Path.GetExtension(filePath));
-                        cmd.Parameters.AddWithValue("$location", filePath);
-                        cmd.ExecuteNonQuery();
+                        cmd.CommandText = "INSERT INTO files (id, title, author, year, doi, favorite, type, note, location, rread) VALUES (NULL, $title, NULL, NULL, NULL, 0, $type, NULL, $location, NULL);";
+                        cmd2.CommandText = "SELECT count(*) AS db FROM files WHERE location = $location";
+
+                        foreach (var filePath in filePaths)
+                        {
+                            cmd2.Parameters.AddWithValue("$location", filePath);
+                            SQLiteDataReader sqldr = cmd2.ExecuteReader();
+                            sqldr.Read();
+
+                            if (Convert.ToInt32(sqldr["db"]) == 0)
+                            {
+                                cmd.Parameters.AddWithValue("$title", Path.GetFileNameWithoutExtension(filePath));
+                                cmd.Parameters.AddWithValue("$type", Path.GetExtension(filePath));
+                                cmd.Parameters.AddWithValue("$location", filePath);
+                                cmd.ExecuteNonQuery(); 
+                            }
+                            sqldr.Dispose();
+                        } 
                     }
                 }
                 transaction.Commit();
@@ -565,12 +663,18 @@ namespace homework
                 SQLiteDataReader sqldr = sqlc.ExecuteReader();
                 using (var cmd = dbConnection.CreateCommand())
                 {
-                    cmd.CommandText = "DELETE FROM vdirs WHERE id = $id;";
-
-                    while (sqldr.Read())
+                    cmd.CommandText = "UPDATE files SET vdirs_id = NULL WHERE vdirs_id = $vdirs_id";
+                    using (var cmd2 = dbConnection.CreateCommand())
                     {
-                        cmd.Parameters.AddWithValue("$id", Convert.ToString(sqldr["id"]));
-                        cmd.ExecuteNonQuery();
+                        cmd2.CommandText = "DELETE FROM vdirs WHERE id = $id;";
+
+                        while (sqldr.Read())
+                        {
+                            cmd.Parameters.AddWithValue("$vdirs_id", Convert.ToString(sqldr["id"]));
+                            cmd.ExecuteNonQuery();
+                            cmd2.Parameters.AddWithValue("$id", Convert.ToString(sqldr["id"]));
+                            cmd2.ExecuteNonQuery();
+                        }
                     }
                 }
                 transaction.Commit();
@@ -600,6 +704,21 @@ namespace homework
             sqlc.Parameters.AddWithValue("$id", fileId);
             sqlc.Parameters.AddWithValue("$vdirs_id", (dirId == -1 ? null : dirId.ToString()));
             sqlc.ExecuteNonQuery();
+        }
+
+        //Get All Tags.
+        public List<Tags> getTags()
+        {
+            List<Tags> tags = new List<Tags>();
+
+            SQLiteCommand sqlc = new SQLiteCommand("SELECT * FROM tags ORDER BY name", dbConnection);
+            SQLiteDataReader sqldr = sqlc.ExecuteReader();
+            while (sqldr.Read())
+            {
+                tags.Add(new Tags(Convert.ToInt32(sqldr["id"]), Convert.ToString(sqldr["name"])));
+            }
+
+            return tags;
         }
 
         //Save modified file record
@@ -632,11 +751,8 @@ namespace homework
                 }
 
                 string[] linkedTagsDiff = new string[0];
-                if (existLinkedTagsName.Count > 0)
-                {
-                    // Gets deleted and new tags.
-                    linkedTagsDiff = tags.Except(existLinkedTagsName.ToArray()).ToArray();
-                }
+                // Gets deleted and new tags.
+                linkedTagsDiff = tags.Except(existLinkedTagsName.ToArray()).ToArray(); 
 
                 if (existLinkedTagsId.Count > 0)
                 {
@@ -648,6 +764,15 @@ namespace homework
                     sqlcdFileTag.Parameters.AddWithValue("$files_id", fi.Id);
                     sqlcdFileTag.AddArrayParameters("tags_id", existLinkedTagsId.ToArray());
                     sqlcdFileTag.ExecuteNonQuery();
+                }
+                else
+                {
+                    // Delete all tags, if there's no match the previous ones.
+                    SQLiteCommand sqlcdFileTag = new SQLiteCommand(@"DELETE  
+                            FROM    file_tag
+                            WHERE   files_id = $files_id;", dbConnection);
+                    sqlcdFileTag.Parameters.AddWithValue("$files_id", fi.Id);
+                    sqlcdFileTag.ExecuteNonQuery(); 
                 }
 
 
@@ -708,15 +833,12 @@ namespace homework
                                     );", dbConnection);
                 sqlcd.ExecuteNonQuery();
 
-                SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET title = $title, author = $author, year = $year, doi = $doi, "
-                    //                                                    + " tags = $tags,"            //TODO
-                                                        + " favorite = $favorite WHERE id = $id", dbConnection);
+                SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET title = $title, author = $author, year = $year, doi = $doi, favorite = $favorite WHERE id = $id", dbConnection);
                 sqlc.Parameters.AddWithValue("$id", fi.Id);
                 sqlc.Parameters.AddWithValue("$title", fi.Title);
                 sqlc.Parameters.AddWithValue("$author", fi.Author);
                 sqlc.Parameters.AddWithValue("$year", fi.Year);
                 sqlc.Parameters.AddWithValue("$doi", fi.Doi);
-                //            sqlc.Parameters.AddWithValue("$tags", fi.Tags);   //TODO
                 sqlc.Parameters.AddWithValue("$favorite", fi.Favorite);
                 sqlc.ExecuteNonQuery();
 
