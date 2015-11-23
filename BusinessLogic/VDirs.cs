@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace homework
+namespace BusinessLogic
 {
     public class VDirs
     {
         List<VDirs> subdirs;
 
-        internal List<VDirs> Subdirs
+        public List<VDirs> Subdirs
         {
             get { return subdirs; }
         }

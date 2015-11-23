@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace homework
+namespace BusinessLogic
 {
     // SQLite documentation: http://www.sqlite.org .
-    class dbManager
+    public class dbManager
     {
         private string dbName;
         private SQLiteConnection dbConnection;
