@@ -63,6 +63,7 @@
             // 
             // buttonCancel
             // 
+            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(311, 52);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
@@ -84,7 +85,7 @@
             this.Controls.Add(this.labelSelectedFiles);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "MoveFilesToDir";
-            this.Text = "MoveFilesToDir";
+            this.Text = "Move files to...";
             this.ResumeLayout(false);
             this.PerformLayout();
 

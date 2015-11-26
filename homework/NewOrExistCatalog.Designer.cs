@@ -102,7 +102,7 @@
             this.Controls.Add(this.buttonNewCatalog);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "NewOrExistCatalog";
-            this.Text = "NewOrExistCatalog";
+            this.Text = "Create new or open exist catalog?";
             this.ResumeLayout(false);
             this.PerformLayout();
 

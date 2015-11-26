@@ -52,7 +52,6 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutDocumentManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textBoxSimpleSearch = new System.Windows.Forms.TextBox();
             this.labelSearch = new System.Windows.Forms.Label();
             this.buttonSimpleSearch = new System.Windows.Forms.Button();
             this.buttonCreateFolder = new System.Windows.Forms.Button();
@@ -98,6 +97,7 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripDirs = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addNewDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -107,6 +107,8 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.textBoxSimpleSearch = new wmgCMS.WaterMarkTextBox();
             this.menuStripMain.SuspendLayout();
             this.Notes.SuspendLayout();
             this.Details.SuspendLayout();
@@ -148,7 +150,7 @@
             // addFileToolStripMenuItem
             // 
             this.addFileToolStripMenuItem.Name = "addFileToolStripMenuItem";
-            this.addFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.addFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
             this.addFileToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
             this.addFileToolStripMenuItem.Text = "Add File";
             this.addFileToolStripMenuItem.Click += new System.EventHandler(this.buttonAddFile_Click);
@@ -156,7 +158,8 @@
             // addDictionaryToolStripMenuItem
             // 
             this.addDictionaryToolStripMenuItem.Name = "addDictionaryToolStripMenuItem";
-            this.addDictionaryToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
+            this.addDictionaryToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.D)));
             this.addDictionaryToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
             this.addDictionaryToolStripMenuItem.Text = "Add Folder";
             // 
@@ -225,6 +228,7 @@
             this.helpToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F1;
             this.helpToolStripMenuItem1.Size = new System.Drawing.Size(216, 22);
             this.helpToolStripMenuItem1.Text = "Help";
+            this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
             // aboutDocumentManagerToolStripMenuItem
             // 
@@ -232,14 +236,6 @@
             this.aboutDocumentManagerToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
             this.aboutDocumentManagerToolStripMenuItem.Text = "About Document Manager";
             this.aboutDocumentManagerToolStripMenuItem.Click += new System.EventHandler(this.aboutDocumentManagerToolStripMenuItem_Click);
-            // 
-            // textBoxSimpleSearch
-            // 
-            this.textBoxSimpleSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSimpleSearch.Location = new System.Drawing.Point(682, 26);
-            this.textBoxSimpleSearch.Name = "textBoxSimpleSearch";
-            this.textBoxSimpleSearch.Size = new System.Drawing.Size(132, 20);
-            this.textBoxSimpleSearch.TabIndex = 2;
             // 
             // labelSearch
             // 
@@ -310,6 +306,7 @@
             this.treeViewDirs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewDirs_AfterSelect);
             this.treeViewDirs.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeViewDirs_DragDrop);
             this.treeViewDirs.DragEnter += new System.Windows.Forms.DragEventHandler(this.treeViewDirs_DragEnter);
+            this.treeViewDirs.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeViewDirs_KeyDown);
             this.treeViewDirs.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeViewDirs_MouseClick);
             // 
             // listViewDocs
@@ -340,6 +337,7 @@
             this.listViewDocs.DragDrop += new System.Windows.Forms.DragEventHandler(this.DocumentManager_DragDrop);
             this.listViewDocs.DragEnter += new System.Windows.Forms.DragEventHandler(this.DocumentManager_DragEnter);
             this.listViewDocs.DoubleClick += new System.EventHandler(this.listViewDocs_DoubleClick);
+            this.listViewDocs.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewDocs_KeyDown);
             this.listViewDocs.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listViewDocs_MouseClick);
             // 
             // favorite
@@ -637,6 +635,7 @@
             this.buttonAddDictionary.TabIndex = 10;
             this.buttonAddDictionary.Text = "Add Folder";
             this.buttonAddDictionary.UseVisualStyleBackColor = true;
+            this.buttonAddDictionary.Click += new System.EventHandler(this.buttonAddDictionary_Click);
             // 
             // contextMenuStripDocList
             // 
@@ -645,42 +644,50 @@
             this.toolStripSeparator2,
             this.openToolStripMenuItem,
             this.moveToolStripMenuItem,
-            this.removeToolStripMenuItem});
+            this.removeToolStripMenuItem,
+            this.selectAllToolStripMenuItem});
             this.contextMenuStripDocList.Name = "contextMenuStripDocList";
-            this.contextMenuStripDocList.Size = new System.Drawing.Size(118, 98);
+            this.contextMenuStripDocList.Size = new System.Drawing.Size(123, 120);
             // 
             // addToFavoriteToolStripMenuItem
             // 
             this.addToFavoriteToolStripMenuItem.Name = "addToFavoriteToolStripMenuItem";
-            this.addToFavoriteToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.addToFavoriteToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.addToFavoriteToolStripMenuItem.Text = "Favorite";
             this.addToFavoriteToolStripMenuItem.Click += new System.EventHandler(this.addToFavoriteToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(114, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(119, 6);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // moveToolStripMenuItem
             // 
             this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
-            this.moveToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.moveToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.moveToolStripMenuItem.Text = "Move";
             this.moveToolStripMenuItem.Click += new System.EventHandler(this.buttonMove_Click);
             // 
             // removeToolStripMenuItem
             // 
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            this.removeToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.removeToolStripMenuItem.Text = "Remove";
             this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
+            // 
+            // selectAllToolStripMenuItem
+            // 
+            this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
+            this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.selectAllToolStripMenuItem.Text = "Select All";
+            this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
             // 
             // contextMenuStripDirs
             // 
@@ -750,12 +757,23 @@
             this.colapseAllToolStripMenuItem.Text = "Colapse all";
             this.colapseAllToolStripMenuItem.Click += new System.EventHandler(this.colapseAllToolStripMenuItem_Click);
             // 
+            // textBoxSimpleSearch
+            // 
+            this.textBoxSimpleSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textBoxSimpleSearch.Location = new System.Drawing.Point(676, 27);
+            this.textBoxSimpleSearch.Name = "textBoxSimpleSearch";
+            this.textBoxSimpleSearch.Size = new System.Drawing.Size(138, 20);
+            this.textBoxSimpleSearch.TabIndex = 11;
+            this.textBoxSimpleSearch.WaterMarkColor = System.Drawing.Color.Gray;
+            this.textBoxSimpleSearch.WaterMarkText = "Search text...";
+            // 
             // DocumentManager
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(982, 473);
+            this.Controls.Add(this.textBoxSimpleSearch);
             this.Controls.Add(this.listViewDocs);
             this.Controls.Add(this.buttonCreateFolder);
             this.Controls.Add(this.treeViewDirs);
@@ -764,7 +782,6 @@
             this.Controls.Add(this.buttonAdvancedSearch);
             this.Controls.Add(this.buttonSimpleSearch);
             this.Controls.Add(this.labelSearch);
-            this.Controls.Add(this.textBoxSimpleSearch);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStripMain);
             this.MainMenuStrip = this.menuStripMain;
@@ -795,7 +812,6 @@
         private System.Windows.Forms.ToolStripMenuItem addDictionaryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStripMain;
-        private System.Windows.Forms.TextBox textBoxSimpleSearch;
         private System.Windows.Forms.Label labelSearch;
         private System.Windows.Forms.Button buttonSimpleSearch;
         private System.Windows.Forms.ListView listViewDocs;
@@ -860,6 +876,9 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private wmgCMS.WaterMarkTextBox textBoxSimpleSearch;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
     }
 }
 

@@ -23,6 +23,7 @@ namespace homework
         Files displayedFile;
         int selectedFileType;
         private ListViewColumnSorter lvwColumnSorter;
+        ASCriteria criteria;
 
         public DocumentManager()
         {
@@ -55,6 +56,7 @@ namespace homework
                 listViewRefresh();
                 generateCustomVDirs();
                 refreshTags();
+                refreshAuthors();
             }
         }
 
@@ -69,6 +71,19 @@ namespace homework
                 TreeNode tn = new TreeNode(tag.Name);
                 tn.Tag = tag;
                 treeViewDirs.Nodes[6].Nodes.Add(tn);
+            }
+        }
+
+        // Refreshing Authors in treeview.
+        private void refreshAuthors()
+        {
+            List<String> authors = dbm.getAuthors();
+            treeViewDirs.Nodes[4].Nodes.Clear();
+
+            foreach (string author in authors)
+            {
+                TreeNode tn = new TreeNode(author);
+                treeViewDirs.Nodes[4].Nodes.Add(tn);
             }
         }
 
@@ -151,8 +166,7 @@ namespace homework
                 }
                 else if (rtn.Index.ToString().Equals("4"))
                 {
-                    // TODO (handle all from authors)
-                    files = new List<Files>();
+                    files = dbm.getAllFilesByAuthors(selected.Text);
                 }
                 else if (selected.Level.ToString().Equals("0") && rtn.Index.ToString().Equals("5"))
                 {
@@ -173,6 +187,10 @@ namespace homework
                 else if (rtn.Index.ToString().Equals("7"))
                 {
                     files = dbm.getAllFilesFromDir(((VDirs)selected.Tag).Id);
+                }
+                else if (rtn.Index.ToString().Equals("8"))
+                {
+                    files = dbm.getASFiles(this.criteria);
                 }
 
                 if (files != null)
@@ -246,20 +264,23 @@ namespace homework
 
         private void removeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ListView.SelectedListViewItemCollection selectedItems = listViewDocs.SelectedItems;
-
-            string[] ids = new string[selectedItems.Count];
-            int i = 0;
-            foreach (ListViewItem item in selectedItems)
+            if (listViewDocs.SelectedItems.Count >0 && MessageBox.Show("Are you sure you want to delete all the selected "+listViewDocs.SelectedItems.Count+" files?", "Delete "+ listViewDocs.SelectedItems.Count + " files...", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
             {
-                ids[i] = ((Files) item.Tag).Id.ToString();
-                listViewDocs.Items.Remove(item);
-                i++;
+                ListView.SelectedListViewItemCollection selectedItems = listViewDocs.SelectedItems;
+
+                string[] ids = new string[selectedItems.Count];
+                int i = 0;
+                foreach (ListViewItem item in selectedItems)
+                {
+                    ids[i] = ((Files)item.Tag).Id.ToString();
+                    listViewDocs.Items.Remove(item);
+                    i++;
+                }
+
+                dbm.removeFiles(ids);
+
+                listViewDocs.Refresh(); 
             }
-
-            dbm.removeFiles(ids);
-
-            listViewDocs.Refresh();
         }
 
         private void listViewDocs_Click(object sender, EventArgs e)
@@ -304,13 +325,53 @@ namespace homework
             checkBoxFavourite.Enabled = false;
         }
 
+        private void OpenFile(Files selectedFiles)
+        {
+            if (File.Exists(selectedFiles.Location))
+            {
+                System.Diagnostics.Process.Start(selectedFiles.Location);
+            }
+            else
+            {
+                var mb = MessageBox.Show("Would you like to rebrowse the file (Yes) or delete it (No)?", "Browse or delete?", MessageBoxButtons.YesNoCancel);
+                if (mb == System.Windows.Forms.DialogResult.Yes)
+                {
+                    OpenFileDialog ofd = new OpenFileDialog();
+                    ofd.Multiselect = false;
+                    ofd.Title = "Browse the lost file...";
+                    string ext = Path.GetExtension(selectedFiles.Location);
+                    ofd.AddExtension = true;
+                    ofd.Filter = "Allowed file extension formats (" + ext + ")|*" + ext;
+
+                    if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        if (ofd.FileName.EndsWith(ext))
+                        {
+                            dbm.setNewPath(selectedFiles.Id, ofd.FileName);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Please select a filename with the '" + ext + "' extension");
+                        }
+                    }
+                    listViewRefresh();
+                }
+                else if (mb == System.Windows.Forms.DialogResult.No)
+                {
+                    dbm.removeFiles(selectedFiles.Id.ToString());
+                    listViewRefresh();
+                    refreshAuthors();
+                    refreshTags();
+                }
+            }
+            dbm.setReceantlyReadNow(selectedFiles.Id);
+        }
+
         private void listViewDocs_DoubleClick(object sender, EventArgs e)
         {
             if (listViewDocs.SelectedItems.Count == 1)
             {
-                Files selectedFiles = (Files)listViewDocs.SelectedItems[0].Tag;
-                System.Diagnostics.Process.Start(selectedFiles.Location);
-                dbm.setReceantlyReadNow(selectedFiles.Id);
+                OpenFile((Files)listViewDocs.SelectedItems[0].Tag);
             }
         }
 
@@ -320,9 +381,7 @@ namespace homework
             {
                 foreach (ListViewItem selItem in listViewDocs.SelectedItems)
                 {
-                    Files selectedFiles = (Files)selItem.Tag;
-                    System.Diagnostics.Process.Start(selectedFiles.Location);
-                    dbm.setReceantlyReadNow(selectedFiles.Id);
+                    OpenFile((Files)selItem.Tag);
                 }
             }
             else if (listViewDocs.SelectedItems.Count >= 10) {
@@ -330,9 +389,7 @@ namespace homework
                 {
                     foreach (ListViewItem selItem in listViewDocs.SelectedItems)
                     {
-                        Files selectedFiles = (Files)selItem.Tag;
-                        System.Diagnostics.Process.Start(selectedFiles.Location);
-                        dbm.setReceantlyReadNow(selectedFiles.Id);
+                        OpenFile((Files)selItem.Tag);
                     }
                 }
             }
@@ -488,12 +545,20 @@ namespace homework
 
         private void deleteDirToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            VDirs vds = (VDirs)treeViewDirs.SelectedNode.Tag;
-            if (MessageBox.Show("Are you sure you want to delete this and the sub directories?", "Delete confirmation", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+            TreeNode rn = FindRootNode(treeViewDirs.SelectedNode);
+            if (treeViewDirs.SelectedNode.Tag != null && !treeViewDirs.SelectedNode.Tag.Equals("") && rn.Index == 7)
             {
-                dbm.removeVdirs(vds.Id);
+                VDirs vds = (VDirs)treeViewDirs.SelectedNode.Tag;
+                if (MessageBox.Show("Are you sure you want to delete this and the sub directories?", "Delete confirmation", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    dbm.removeVdirs(vds.Id);
 
-                generateCustomVDirs();
+                    generateCustomVDirs();
+                } 
+            }
+            else
+            {
+                MessageBox.Show("This item can't be deleted!");
             }
         }
 
@@ -614,7 +679,9 @@ namespace homework
                 displayedFile.Note = textBoxNotes.Text;
                 displayedFile.Favorite = checkBoxFavourite.Checked;
                 dbm.saveModifiedFileRecords(displayedFile);
+                listViewRefresh();
                 refreshTags();
+                refreshAuthors();
             }
             else
             {
@@ -646,31 +713,29 @@ namespace homework
 
         private void buttonAdvancedSearch_Click(object sender, EventArgs e)
         {
-            AdvancedSearch ads = new AdvancedSearch();
+            AdvancedSearch ads;
+            if (this.criteria == null)
+            {
+                ads = new AdvancedSearch();
+            }
+            else
+            {
+                ads = new AdvancedSearch(this.criteria); 
+            }
             List<Files> files = null;
             if (ads.ShowDialog() == DialogResult.OK)
             {
                 files = dbm.getASFiles(ads.Criteria);
 
-                if (files != null)
+                this.criteria = ads.Criteria;
+
+                if (treeViewDirs.Nodes.Count == 8)
                 {
-                    listViewDocs.Items.Clear();
-
-                    foreach (Files fileItem in files)
-                    {
-                        ListViewItem lvi = new ListViewItem(fileItem.Favorite.ToString());
-                        lvi.SubItems.Add(fileItem.Type);
-                        lvi.SubItems.Add(fileItem.Title);
-                        lvi.SubItems.Add(fileItem.Author);
-                        lvi.SubItems.Add(fileItem.Year);
-                        lvi.SubItems.Add(fileItem.Doi);
-                        lvi.SubItems.Add(fileItem.Added);
-
-                        lvi.Tag = fileItem;
-
-                        listViewDocs.Items.Add(lvi);
-                    }
+                    treeViewDirs.Nodes.Add("Search result");
                 }
+
+                treeViewDirs.SelectedNode = null;
+                treeViewDirs.SelectedNode = treeViewDirs.Nodes[8];
             }
         }
 
@@ -853,6 +918,90 @@ namespace homework
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Environment.Exit(0);
+        }
+
+        private void buttonAddDictionary_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (folderBrowserDialog.SelectedPath != null || folderBrowserDialog.SelectedPath != "")
+                {
+                    List<string> paths = new List<string>();
+                    List<string> pathsUseable = new List<string>();
+
+                    // Get all files/dirs which was dropped in the app
+                    AddFileFromPaths(ref paths, folderBrowserDialog.SelectedPath);
+
+                    string fileTypes = dbm.getFileExtensions(selectedFileType);
+
+                    string[] extexp = fileTypes.Split(',');
+
+                    string ext = "";
+
+                    foreach (string extItem in extexp)
+                    {
+                        ext += ";." + extItem.Trim();
+                    }
+                    ext += ";";
+
+                    // Remove non used files.
+                    foreach (string path in paths)
+                    {
+                        string fext = Path.GetExtension(path);
+                        if (ext.Contains(";" + fext + ";"))
+                        {
+                            pathsUseable.Add(path);
+                        }
+                    }
+
+                    dbm.addFiles(pathsUseable.ToArray());
+                    listViewRefresh();
+
+                    paths.Clear();
+                    pathsUseable.Clear();
+                }
+            }
+        }
+
+        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listViewDocs.Items)
+            {
+                item.Selected = true;
+            }
+        }
+
+        private void listViewDocs_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.A && e.Control)
+            {
+                foreach (ListViewItem item in listViewDocs.Items)
+                {
+                    item.Selected = true;
+                }
+            }
+            else if (e.KeyCode == Keys.Delete)
+            {
+                removeToolStripMenuItem_Click(sender, e);
+            }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                openToolStripMenuItem_Click(sender, e);
+            }
+        }
+
+        private void treeViewDirs_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                deleteDirToolStripMenuItem_Click(sender, e);
+            }
+        }
+
+        private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Help hw = new Help();
+            hw.ShowDialog();
         }
     }
 }

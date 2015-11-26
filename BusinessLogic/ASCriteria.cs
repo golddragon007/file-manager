@@ -17,10 +17,10 @@ namespace BusinessLogic
         private DateTime addedFrom;
         private DateTime addedTo;
         private string notes;
-        private bool favorite;
+        private int favorite;
 
         public ASCriteria(string in_title, string in_author, int in_yearFrom, int in_yearTo, string in_doi,
-            string in_tags, DateTime in_addedFrom, DateTime in_addedTo, string in_notes, bool in_favorite) 
+            string in_tags, DateTime in_addedFrom, DateTime in_addedTo, string in_notes, int in_favorite) 
         {
             this.title = in_title;
             this.author = in_author;
@@ -88,7 +88,7 @@ namespace BusinessLogic
             set { notes = value; }
         }
 
-        public bool Favorite
+        public int Favorite
         {
             get { return favorite; }
             set { favorite = value; }

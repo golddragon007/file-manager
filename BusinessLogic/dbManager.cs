@@ -100,7 +100,7 @@ namespace BusinessLogic
             SQLiteCommand sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
 	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
 	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
-	                GROUP BY f.title", dbConnection);
+	                GROUP BY f.id", dbConnection);
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
@@ -137,7 +137,7 @@ namespace BusinessLogic
 	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
 	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
                     WHERE f.added >= $added
-	                GROUP BY f.title", dbConnection);
+	                GROUP BY f.id", dbConnection);
             sqlc.Parameters.AddWithValue("$added", dt.ToString("yyyy-MM-dd HH:mm:ss"));
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
@@ -175,7 +175,7 @@ namespace BusinessLogic
 	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
 	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
                     WHERE f.rread >= $rread
-	                GROUP BY f.title", dbConnection);
+	                GROUP BY f.id", dbConnection);
             sqlc.Parameters.AddWithValue("$rread", dt.ToString("yyyy-MM-dd HH:mm:ss"));
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
@@ -210,7 +210,7 @@ namespace BusinessLogic
 	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
 	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
                     WHERE f.favorite = 1
-	                GROUP BY f.title", dbConnection);
+	                GROUP BY f.id", dbConnection);
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
@@ -244,7 +244,7 @@ namespace BusinessLogic
 	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
 	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
                     WHERE f.'vdirs_id' is NULL
-	                GROUP BY f.title", dbConnection);
+	                GROUP BY f.id", dbConnection);
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
@@ -278,7 +278,7 @@ namespace BusinessLogic
 	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
 	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
                     WHERE f.'vdirs_id' = $vdirs_id
-	                GROUP BY f.title", dbConnection);
+	                GROUP BY f.id", dbConnection);
             sqlc.Parameters.AddWithValue("$vdirs_id", dirId);
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
@@ -313,8 +313,55 @@ namespace BusinessLogic
 	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
 	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
                     WHERE ft.'tags_id' = $tags_id
-	                GROUP BY f.title", dbConnection);
+	                GROUP BY f.id", dbConnection);
             sqlc.Parameters.AddWithValue("$tags_id", tagId);
+            SQLiteDataReader sqldr = sqlc.ExecuteReader();
+            while (sqldr.Read())
+            {
+                // Do not use sqldr["id"].toString() because it won't work and kills the program!
+                files.Add(new Files(
+                    Convert.ToInt32(sqldr["id"]),
+                    Convert.ToString(sqldr["title"]),
+                    Convert.ToString(sqldr["author"]),
+                    Convert.ToString(sqldr["year"]),
+                    Convert.ToString(sqldr["doi"]),
+                    Convert.ToString(sqldr["vdirs_id"]),
+                    Convert.ToBoolean(sqldr["favorite"]),
+                    Convert.ToString(sqldr["type"]),
+                    Convert.ToString(sqldr["tags_name"]),
+                    Convert.ToString(sqldr["note"]),
+                    Convert.ToString(sqldr["location"]),
+                    Convert.ToString(sqldr["added"]),
+                    Convert.ToString(sqldr["rread"])
+                    ));
+            }
+
+            return files;
+        }
+
+        // Returns a list those Files which has the defined Author name.
+        public List<Files> getAllFilesByAuthors(string authorName)
+        {
+            List<Files> files = new List<Files>();
+
+            SQLiteCommand sqlc;
+            if (authorName.Equals("(No author name)"))
+            {
+                sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
+	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
+                    WHERE f.'author' IS NULL or f.'author' = '' or f.'author' = '(No author name)'
+	                GROUP BY f.id", dbConnection);
+            }
+            else
+            {
+                sqlc = new SQLiteCommand(@"SELECT f.*, group_concat(t.name, ', ') AS tags_name FROM files f
+	                LEFT JOIN file_tag ft ON ft.'files_id' = f.'id'
+	                LEFT JOIN tags t ON ft.'tags_id' = t.'id'
+                    WHERE f.'author' = $author
+	                GROUP BY f.id", dbConnection);
+                sqlc.Parameters.AddWithValue("$author", authorName);
+            }
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {
@@ -414,9 +461,23 @@ namespace BusinessLogic
         {
             if (!id.Equals(""))
             {
+                SQLiteCommand sqlc2 = new SQLiteCommand("DELETE FROM file_tag WHERE files_id = $files_id;", dbConnection);
+                sqlc2.Parameters.AddWithValue("$files_id", id);
+                sqlc2.ExecuteNonQuery();
+
                 SQLiteCommand sqlc = new SQLiteCommand("DELETE FROM files WHERE id = $id;", dbConnection);
                 sqlc.Parameters.AddWithValue("$id", id);
                 sqlc.ExecuteNonQuery();
+
+                // Search and delete those records which doesn't have pair in file_tag table form tags table.
+                SQLiteCommand sqlcd = new SQLiteCommand(@"DELETE  
+                            FROM    tags
+                            WHERE   id NOT IN
+                                    (
+                                    SELECT  tags_id
+                                    FROM    file_tag
+                                    );", dbConnection);
+                sqlcd.ExecuteNonQuery();
             }
         }
 
@@ -429,12 +490,29 @@ namespace BusinessLogic
                 {
                     using (var cmd = dbConnection.CreateCommand())
                     {
-                        cmd.CommandText = "DELETE FROM files WHERE id = $id;";
-
-                        foreach (string id in ids)
+                        using (var cmd2 = dbConnection.CreateCommand())
                         {
-                            cmd.Parameters.AddWithValue("$id", id);
-                            cmd.ExecuteNonQuery();
+                            cmd2.CommandText = "DELETE FROM file_tag WHERE files_id = $files_id;";
+                            cmd.CommandText = "DELETE FROM files WHERE id = $id;";
+
+                            foreach (string id in ids)
+                            {
+                                cmd2.Parameters.AddWithValue("$files_id", id);
+                                cmd2.ExecuteNonQuery();
+                                cmd.Parameters.AddWithValue("$id", id);
+                                cmd.ExecuteNonQuery();
+                            }
+
+
+                            // Search and delete those records which doesn't have pair in file_tag table form tags table.
+                            SQLiteCommand sqlcd = new SQLiteCommand(@"DELETE  
+                            FROM    tags
+                            WHERE   id NOT IN
+                                    (
+                                    SELECT  tags_id
+                                    FROM    file_tag
+                                    );", dbConnection);
+                            sqlcd.ExecuteNonQuery();
                         }
                     }
                     transaction.Commit();
@@ -462,7 +540,7 @@ namespace BusinessLogic
 	                f.'added' LIKE $searchString OR 
 	                f.'rread' LIKE $searchString OR
 	                t.'name' LIKE $searchString
-	                GROUP BY f.title", dbConnection);
+	                GROUP BY f.id", dbConnection);
             sqlc.Parameters.AddWithValue("$searchString", "%" + searchedString + "%");
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
@@ -494,10 +572,17 @@ namespace BusinessLogic
             // Actual date.
             DateTime dt = DateTime.Now;
 
-            List<Files> files = new List<Files>();
-
             SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET rread = $rread WHERE id = $id", dbConnection);
             sqlc.Parameters.AddWithValue("$rread", dt.ToString("yyyy-MM-dd HH:mm:ss"));
+            sqlc.Parameters.AddWithValue("$id", id);
+            sqlc.ExecuteNonQuery();
+        }
+
+        // Set new path/location parameter.
+        public void setNewPath(int id, string path)
+        {
+            SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET location = $location WHERE id = $id", dbConnection);
+            sqlc.Parameters.AddWithValue("$location", path);
             sqlc.Parameters.AddWithValue("$id", id);
             sqlc.ExecuteNonQuery();
         }
@@ -721,6 +806,29 @@ namespace BusinessLogic
             return tags;
         }
 
+        //Get All Authors.
+        public List<string> getAuthors()
+        {
+            List<string> tags = new List<string>();
+
+            SQLiteCommand sqlc = new SQLiteCommand(@"SELECT CASE
+    WHEN author IS NULL OR author = ''
+    THEN '(No author name)'
+    ELSE author
+END as author FROM files GROUP BY CASE
+    WHEN author IS NULL OR author = ''
+    THEN '(No author name)'
+    ELSE author
+END ORDER BY author", dbConnection);
+            SQLiteDataReader sqldr = sqlc.ExecuteReader();
+            while (sqldr.Read())
+            {
+                tags.Add(Convert.ToString(sqldr["author"]));
+            }
+
+            return tags;
+        }
+
         //Save modified file record
         public void saveModifiedFileRecords(Files fi)
         {
@@ -872,70 +980,121 @@ namespace BusinessLogic
 
             if (criteria.Title != "")
             {
-                where += "and f.title LIKE '%" + criteria.Title + "%' ";
+                where += "and f.title LIKE $title ";
             }
 
             if (criteria.Author != "")
             {
-                where += "and f.author LIKE '%" + criteria.Author + "%' ";
+                where += "and f.author LIKE $author ";
             }
 
             if (criteria.Doi != "")
             {
-                where += "and f.doi LIKE '%" + criteria.Doi + "%' ";
+                where += "and f.doi LIKE $doi ";
             }
 
             if (criteria.Tags != "")
             {
-                string[] tags = criteria.Tags.Split(new char[] { ' ' });
-                string tagCommand = "";
-                foreach (string tag in tags) 
-                {
-                    tagCommand += "or t.name = '" + tag + "' "; 
-                }
-                tagCommand = tagCommand + tagCommand.Remove(0,3);
-                where += "(" + tagCommand + ")";
+                where += @"and Exists    (
+                Select 1
+                From file_tag As ft
+                LEFT JOIN tags t ON t.id = ft.tags_id
+                Where t.name In ({name_tags})
+                    And ft.files_id = f.Id
+                Group By ft.files_id
+                Having Count(*) = $name_tags_count
+                )"; 
             }
 
             if (criteria.YearFrom != 0)
             {
-                where += "and f.year >= " + criteria.YearFrom + " ";
+                where += "and f.year >= $yearFrom ";
             }
 
             if (criteria.YearTo != 0)
             {
-                where += "and f.year <= " + criteria.YearTo + " ";
+                where += "and f.year <= $yearTo ";
             }
 
             if (criteria.AddedFrom > DateTime.MinValue)
             {
-                where += "and f.added >= " + criteria.AddedFrom + " ";
+                where += "and f.added >= $addedFrom ";
             }
 
             if (criteria.AddedTo > DateTime.MinValue)
             {
-                where += "and f.added <= " + criteria.AddedTo + " ";
+                where += "and f.added <= $addedTo ";
             }
 
             if (criteria.Notes != "")
             {
-                where += "and f.note LIKE '%" + criteria.Notes + "%' ";
+                where += "and f.note LIKE $note ";
             }
 
-            if (criteria.Favorite)
+            if (criteria.Favorite == 1)
             {
                 where += "and f.favorite = 1 ";
+            }
+            else if (criteria.Favorite == 0)
+            {
+                where += "and f.favorite = 0 ";
             }
 
             if (where != "")
             {
-                where = "WHERE " + where.Remove(0, 4);
+                where = " WHERE " + where.Remove(0, 4);
                 command += where;
             }
 
-            command += @"GROUP BY f.title";
+            command += @" GROUP BY f.id";
 
             SQLiteCommand sqlc = new SQLiteCommand(command, dbConnection);
+            if (criteria.Title != "")
+            {
+                sqlc.Parameters.AddWithValue("$title", criteria.Title);
+            }
+
+            if (criteria.Author != "")
+            {
+                sqlc.Parameters.AddWithValue("$author", criteria.Author);
+            }
+
+            if (criteria.Doi != "")
+            {
+                sqlc.Parameters.AddWithValue("$doi", criteria.Doi);
+            }
+
+            if (criteria.Tags != "")
+            {
+                string[] tags = criteria.Tags.Split(new string[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
+                sqlc.AddArrayParameters("name_tags", tags);
+                sqlc.Parameters.AddWithValue("$name_tags_count", tags.Length);
+            }
+
+            if (criteria.YearFrom != 0)
+            {
+                sqlc.Parameters.AddWithValue("$yearFrom", criteria.YearFrom);
+            }
+
+            if (criteria.YearTo != 0)
+            {
+                sqlc.Parameters.AddWithValue("$yearTo", criteria.YearTo);
+            }
+
+            if (criteria.AddedFrom > DateTime.MinValue)
+            {
+                sqlc.Parameters.AddWithValue("$addedFrom", criteria.AddedFrom);
+            }
+
+            if (criteria.AddedTo > DateTime.MinValue)
+            {
+                sqlc.Parameters.AddWithValue("$addedTo", criteria.AddedTo);
+            }
+
+            if (criteria.Notes != "")
+            {
+                sqlc.Parameters.AddWithValue("$note", criteria.Notes);
+            }
             SQLiteDataReader sqldr = sqlc.ExecuteReader();
             while (sqldr.Read())
             {

@@ -78,6 +78,12 @@
     <Compile Include="DocumentManager.Designer.cs">
       <DependentUpon>DocumentManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Help.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Help.Designer.cs">
+      <DependentUpon>Help.cs</DependentUpon>
+    </Compile>
     <Compile Include="ListViewColumnSorter.cs" />
     <Compile Include="MoveFilesToDir.cs">
       <SubType>Form</SubType>
@@ -117,6 +123,9 @@
     <Compile Include="Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="WaterMarkTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <EmbeddedResource Include="About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
@@ -125,6 +134,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DocumentManager.resx">
       <DependentUpon>DocumentManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Help.resx">
+      <DependentUpon>Help.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MoveFilesToDir.resx">
       <DependentUpon>MoveFilesToDir.cs</DependentUpon>
@@ -167,11 +179,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="sqlite_x64\SQLite.Designer.dll" />
     <Content Include="sqlite_x64\SQLite.Interop.dll" />
+    <Content Include="sqlite_x64\System.Data.SQLite.dll" />
+    <Content Include="sqlite_x64\System.Data.SQLite.EF6.dll" />
+    <Content Include="sqlite_x64\System.Data.SQLite.Linq.dll" />
+    <Content Include="sqlite_x86\SQLite.Designer.dll" />
     <Content Include="sqlite_x86\SQLite.Interop.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
+    <Content Include="sqlite_x86\System.Data.SQLite.dll" />
+    <Content Include="sqlite_x86\System.Data.SQLite.EF6.dll" />
+    <Content Include="sqlite_x86\System.Data.SQLite.Linq.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj">
