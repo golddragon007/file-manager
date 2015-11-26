@@ -66,7 +66,7 @@
             this.buttonCreate.Location = new System.Drawing.Point(116, 100);
             this.buttonCreate.Name = "buttonCreate";
             this.buttonCreate.Size = new System.Drawing.Size(75, 23);
-            this.buttonCreate.TabIndex = 4;
+            this.buttonCreate.TabIndex = 5;
             this.buttonCreate.Text = "Create";
             this.buttonCreate.UseVisualStyleBackColor = true;
             this.buttonCreate.Click += new System.EventHandler(this.buttonCreate_Click);
@@ -77,7 +77,7 @@
             this.buttonCancel.Location = new System.Drawing.Point(197, 100);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 5;
+            this.buttonCancel.TabIndex = 6;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
@@ -90,7 +90,7 @@
             this.comboBoxMainDir.Location = new System.Drawing.Point(12, 64);
             this.comboBoxMainDir.Name = "comboBoxMainDir";
             this.comboBoxMainDir.Size = new System.Drawing.Size(257, 21);
-            this.comboBoxMainDir.TabIndex = 6;
+            this.comboBoxMainDir.TabIndex = 4;
             // 
             // NewVDir
             // 

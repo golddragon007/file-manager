@@ -982,11 +982,11 @@ namespace homework
             }
             else if (e.KeyCode == Keys.Delete)
             {
-                removeToolStripMenuItem_Click(sender, e);
+                removeToolStripMenuItem.PerformClick();
             }
             else if (e.KeyCode == Keys.Enter)
             {
-                openToolStripMenuItem_Click(sender, e);
+                openToolStripMenuItem.PerformClick();
             }
         }
 
@@ -994,7 +994,7 @@ namespace homework
         {
             if (e.KeyCode == Keys.Delete)
             {
-                deleteDirToolStripMenuItem_Click(sender, e);
+                deleteDirToolStripMenuItem.PerformClick();
             }
         }
 
@@ -1002,6 +1002,29 @@ namespace homework
         {
             Help hw = new Help();
             hw.ShowDialog();
+        }
+
+        private void textBoxSimpleSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                buttonSimpleSearch.PerformClick();
+            }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.F))
+            {
+                textBoxSimpleSearch.Focus();
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.Shift | Keys.F))
+            {
+                buttonAdvancedSearch.PerformClick();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }

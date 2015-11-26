@@ -244,7 +244,7 @@
             this.labelSearch.Location = new System.Drawing.Point(598, 30);
             this.labelSearch.Name = "labelSearch";
             this.labelSearch.Size = new System.Drawing.Size(78, 13);
-            this.labelSearch.TabIndex = 3;
+            this.labelSearch.TabIndex = 3000;
             this.labelSearch.Text = "Simple Search:";
             // 
             // buttonSimpleSearch
@@ -253,7 +253,7 @@
             this.buttonSimpleSearch.Location = new System.Drawing.Point(820, 25);
             this.buttonSimpleSearch.Name = "buttonSimpleSearch";
             this.buttonSimpleSearch.Size = new System.Drawing.Size(31, 23);
-            this.buttonSimpleSearch.TabIndex = 4;
+            this.buttonSimpleSearch.TabIndex = 23;
             this.buttonSimpleSearch.Text = "OK";
             this.buttonSimpleSearch.UseVisualStyleBackColor = true;
             this.buttonSimpleSearch.Click += new System.EventHandler(this.buttonSimpleSearch_Click);
@@ -263,7 +263,7 @@
             this.buttonCreateFolder.Location = new System.Drawing.Point(12, 54);
             this.buttonCreateFolder.Name = "buttonCreateFolder";
             this.buttonCreateFolder.Size = new System.Drawing.Size(93, 23);
-            this.buttonCreateFolder.TabIndex = 4;
+            this.buttonCreateFolder.TabIndex = 3;
             this.buttonCreateFolder.Text = "Create Folder";
             this.buttonCreateFolder.UseVisualStyleBackColor = true;
             this.buttonCreateFolder.Click += new System.EventHandler(this.buttonCreateFolder_Click);
@@ -302,7 +302,7 @@
             treeNode7,
             treeNode8});
             this.treeViewDirs.Size = new System.Drawing.Size(208, 377);
-            this.treeViewDirs.TabIndex = 1;
+            this.treeViewDirs.TabIndex = 4;
             this.treeViewDirs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewDirs_AfterSelect);
             this.treeViewDirs.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeViewDirs_DragDrop);
             this.treeViewDirs.DragEnter += new System.Windows.Forms.DragEventHandler(this.treeViewDirs_DragEnter);
@@ -327,7 +327,7 @@
             this.listViewDocs.Location = new System.Drawing.Point(229, 49);
             this.listViewDocs.Name = "listViewDocs";
             this.listViewDocs.Size = new System.Drawing.Size(441, 414);
-            this.listViewDocs.TabIndex = 1;
+            this.listViewDocs.TabIndex = 5;
             this.listViewDocs.UseCompatibleStateImageBehavior = false;
             this.listViewDocs.View = System.Windows.Forms.View.Details;
             this.listViewDocs.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewDocs_ColumnClick);
@@ -374,7 +374,7 @@
             this.buttonAdvancedSearch.Location = new System.Drawing.Point(857, 24);
             this.buttonAdvancedSearch.Name = "buttonAdvancedSearch";
             this.buttonAdvancedSearch.Size = new System.Drawing.Size(113, 23);
-            this.buttonAdvancedSearch.TabIndex = 8;
+            this.buttonAdvancedSearch.TabIndex = 24;
             this.buttonAdvancedSearch.Text = "Advanced Search";
             this.buttonAdvancedSearch.UseVisualStyleBackColor = true;
             this.buttonAdvancedSearch.Click += new System.EventHandler(this.buttonAdvancedSearch_Click);
@@ -398,7 +398,7 @@
             this.textBoxNotes.ReadOnly = true;
             this.textBoxNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxNotes.Size = new System.Drawing.Size(278, 373);
-            this.textBoxNotes.TabIndex = 0;
+            this.textBoxNotes.TabIndex = 13;
             // 
             // Details
             // 
@@ -460,7 +460,7 @@
             this.textBoxTags.Name = "textBoxTags";
             this.textBoxTags.ReadOnly = true;
             this.textBoxTags.Size = new System.Drawing.Size(207, 20);
-            this.textBoxTags.TabIndex = 24;
+            this.textBoxTags.TabIndex = 11;
             // 
             // labelTags
             // 
@@ -478,7 +478,7 @@
             this.checkBoxFavourite.Location = new System.Drawing.Point(67, 253);
             this.checkBoxFavourite.Name = "checkBoxFavourite";
             this.checkBoxFavourite.Size = new System.Drawing.Size(15, 14);
-            this.checkBoxFavourite.TabIndex = 22;
+            this.checkBoxFavourite.TabIndex = 12;
             this.checkBoxFavourite.UseVisualStyleBackColor = true;
             // 
             // buttonMove
@@ -532,7 +532,7 @@
             this.buttonEdit.Location = new System.Drawing.Point(43, 296);
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.Size = new System.Drawing.Size(75, 23);
-            this.buttonEdit.TabIndex = 16;
+            this.buttonEdit.TabIndex = 20;
             this.buttonEdit.Text = "Edit";
             this.buttonEdit.UseVisualStyleBackColor = true;
             this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
@@ -543,7 +543,7 @@
             this.textBoxDOI.Name = "textBoxDOI";
             this.textBoxDOI.ReadOnly = true;
             this.textBoxDOI.Size = new System.Drawing.Size(207, 20);
-            this.textBoxDOI.TabIndex = 11;
+            this.textBoxDOI.TabIndex = 10;
             // 
             // textBoxYear
             // 
@@ -615,14 +615,14 @@
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(294, 414);
-            this.tabControl1.TabIndex = 1;
+            this.tabControl1.TabIndex = 6;
             // 
             // buttonAddFile
             // 
             this.buttonAddFile.Location = new System.Drawing.Point(12, 25);
             this.buttonAddFile.Name = "buttonAddFile";
             this.buttonAddFile.Size = new System.Drawing.Size(93, 23);
-            this.buttonAddFile.TabIndex = 9;
+            this.buttonAddFile.TabIndex = 1;
             this.buttonAddFile.Text = "Add File";
             this.buttonAddFile.UseVisualStyleBackColor = true;
             this.buttonAddFile.Click += new System.EventHandler(this.buttonAddFile_Click);
@@ -632,7 +632,7 @@
             this.buttonAddDictionary.Location = new System.Drawing.Point(111, 25);
             this.buttonAddDictionary.Name = "buttonAddDictionary";
             this.buttonAddDictionary.Size = new System.Drawing.Size(90, 23);
-            this.buttonAddDictionary.TabIndex = 10;
+            this.buttonAddDictionary.TabIndex = 2;
             this.buttonAddDictionary.Text = "Add Folder";
             this.buttonAddDictionary.UseVisualStyleBackColor = true;
             this.buttonAddDictionary.Click += new System.EventHandler(this.buttonAddDictionary_Click);
@@ -763,9 +763,10 @@
             this.textBoxSimpleSearch.Location = new System.Drawing.Point(676, 27);
             this.textBoxSimpleSearch.Name = "textBoxSimpleSearch";
             this.textBoxSimpleSearch.Size = new System.Drawing.Size(138, 20);
-            this.textBoxSimpleSearch.TabIndex = 11;
+            this.textBoxSimpleSearch.TabIndex = 22;
             this.textBoxSimpleSearch.WaterMarkColor = System.Drawing.Color.Gray;
             this.textBoxSimpleSearch.WaterMarkText = "Search text...";
+            this.textBoxSimpleSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxSimpleSearch_KeyDown);
             // 
             // DocumentManager
             // 
