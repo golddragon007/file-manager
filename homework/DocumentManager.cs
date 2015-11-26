@@ -419,7 +419,11 @@ namespace homework
                     if (treeViewDirs.SelectedNode.Level == 0 || rtn.Index == 4)
                     {
                         // Disabling all dir function on root items.
-                        addNewDirToolStripMenuItem.Enabled = false;
+
+                        if (treeViewDirs.SelectedNode.Index != 7)
+                        {
+                            addNewDirToolStripMenuItem.Enabled = false; 
+                        }
                         moveDirToolStripMenuItem.Enabled = false;
                         deleteDirToolStripMenuItem.Enabled = false;
                         contextMenuStripDirs.Show(treeViewDirs, e.Location);
@@ -443,8 +447,16 @@ namespace homework
             fullPaths.Add(new VDirs(-1, treeViewDirs.Nodes[7].Text, -1, treeViewDirs.Nodes[7].FullPath));
             getAllFullPath(treeViewDirs.Nodes[7], ref fullPaths);
 
-            VDirs vds = (VDirs)treeViewDirs.SelectedNode.Tag;
-            vds.FullPath = treeViewDirs.SelectedNode.FullPath;
+            VDirs vds;
+            if (treeViewDirs.SelectedNode.Index == 7 && treeViewDirs.SelectedNode.Level == 0)
+            {
+                vds = fullPaths.FirstOrDefault();
+            }
+            else
+            {
+                vds = (VDirs)treeViewDirs.SelectedNode.Tag;
+                vds.FullPath = treeViewDirs.SelectedNode.FullPath;
+            }
 
             NewVDir nvdw = new NewVDir(fullPaths.ToArray(), vds);
             if (nvdw.ShowDialog() == System.Windows.Forms.DialogResult.OK)

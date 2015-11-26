@@ -167,14 +167,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="sqlite_x64\SQLite.Interop.dll" />
+    <Content Include="sqlite_x86\SQLite.Interop.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj">
       <Project>{8fe9e5a7-d00c-4ea8-98ae-f0155664424b}</Project>
       <Name>BusinessLogic</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="sqlite_x64\SQLite.Interop.dll" />
-    <Content Include="sqlite_x86\SQLite.Interop.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
