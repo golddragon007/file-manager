@@ -328,6 +328,7 @@
             this.Controls.Add(this.labelYear);
             this.Controls.Add(this.labelAuthor);
             this.Controls.Add(this.labelTitle);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "AdvancedSearch";
             this.Text = "Advanced Search";
             this.groupBoxFavorite.ResumeLayout(false);

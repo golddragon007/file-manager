@@ -33,7 +33,7 @@ namespace BusinessLogic
             {
                 // Table name: field names
                 // files: id, title, author, year, doi, favorite, vdirs_id, type, note, location, added, rread
-                // file_tag: files_id, tags_id
+                // file_tag: id, files_id, tags_id
                 // tags: id, name
                 // vdirs: id, name, parentdir_id
                 // settings: id, name, value
