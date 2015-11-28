@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace homework
+namespace DocumentManager
 {
     public partial class Settings : Form
     {

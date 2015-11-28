@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using BusinessLogic;
 
-namespace homework
+namespace DocumentManager
 {
     public partial class AdvancedSearch : Form
     {

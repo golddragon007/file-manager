@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 
 // File source: https://support.microsoft.com/en-us/kb/319401
-namespace homework
+namespace DocumentManager
 {
     /// <summary>
     /// This class is an implementation of the 'IComparer' interface.

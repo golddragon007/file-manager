@@ -8,18 +8,23 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace homework
+namespace DocumentManager
 {
-    public partial class Help : Form
+    public partial class About : Form
     {
-        public Help()
+        public About()
         {
             InitializeComponent();
         }
 
-        private void buttonOk_Click(object sender, EventArgs e)
+        private void buttonClose_Click(object sender, EventArgs e)
         {
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(linkLabel1.Text);
         }
     }
 }

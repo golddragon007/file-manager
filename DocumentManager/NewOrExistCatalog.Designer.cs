@@ -1,4 +1,4 @@
-﻿namespace homework
+﻿namespace DocumentManager
 {
     partial class NewOrExistCatalog
     {

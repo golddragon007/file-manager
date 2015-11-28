@@ -13,7 +13,7 @@ using System.Windows.Forms;
 using System.IO;
 using BusinessLogic;
 
-namespace homework
+namespace DocumentManager
 {
     
     public partial class DocumentManager : Form

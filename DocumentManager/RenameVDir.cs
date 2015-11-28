@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace homework
+namespace DocumentManager
 {
     public partial class RenameVDir : Form
     {
