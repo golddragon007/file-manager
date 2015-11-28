@@ -49,6 +49,39 @@ namespace BusinessLogic
                 sqlc.ExecuteNonQuery();
                 sqlc = new SQLiteCommand("CREATE TABLE 'settings' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL  UNIQUE, 'name' VARCHAR NOT NULL, 'value' VARCHAR NOT NULL)", dbConnection);
                 sqlc.ExecuteNonQuery();
+                sqlc = new SQLiteCommand(@"CREATE INDEX ft_tag_id_file_id
+                        on file_tag (files_id, tags_id);
+                        CREATE INDEX ft_file_id
+                        on file_tag (files_id);
+                        CREATE INDEX ft_tag_id
+                        on file_tag (tags_id);
+                        CREATE INDEX v_parentdir_id
+                        on vdirs (parentdir_id);
+                        CREATE INDEX v_name
+                        on vdirs (name);
+                        CREATE INDEX t_name
+                        on tags (name);
+                        CREATE INDEX f_title
+                        on files (title);
+                        CREATE INDEX f_author
+                        on files (author);
+                        CREATE INDEX f_year
+                        on files ('year');
+                        CREATE INDEX f_doi
+                        on files (doi);
+                        CREATE INDEX f_vdirs_id
+                        on files (vdirs_id);
+                        CREATE INDEX f_favorite
+                        on files (favorite);
+                        CREATE INDEX f_type
+                        on files (type);
+                        CREATE INDEX f_location
+                        on files (location);
+                        CREATE INDEX f_added
+                        on files (added);
+                        CREATE INDEX f_rread
+                        on files (rread);", dbConnection);
+                sqlc.ExecuteNonQuery();
                 sqlc = new SQLiteCommand("INSERT INTO settings ('id', 'name', 'value') VALUES (1, $name, $value)", dbConnection);
                 sqlc.Parameters.AddWithValue("$name", "Document extensions");
                 sqlc.Parameters.AddWithValue("$value", "doc,docx,xls,xlsx,pdf,txt,htm,html");
@@ -77,6 +110,17 @@ namespace BusinessLogic
                 sqlc.Parameters.AddWithValue("$name", "Selected file extensions");
                 sqlc.Parameters.AddWithValue("$value", "1");
                 sqlc.ExecuteNonQuery();
+            }
+
+            try
+            {
+                SQLiteCommand sqlc = new SQLiteCommand("pragma schema_version;", dbConnection);
+                SQLiteDataReader sqldr = sqlc.ExecuteReader();
+                sqldr.Read();
+            }
+            catch (SQLiteException e)
+            {
+                throw e;
             }
         }
 

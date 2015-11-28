@@ -42,21 +42,32 @@ namespace DocumentManager
             }
             else if (result == System.Windows.Forms.DialogResult.OK)
             {
-                // Create an instance of a ListView column sorter and assign it 
-                // to the ListView control.
-                lvwColumnSorter = new ListViewColumnSorter();
-                this.listViewDocs.ListViewItemSorter = lvwColumnSorter;
+                try
+                {
+                    // Create an instance of a ListView column sorter and assign it 
+                    // to the ListView control.
+                    lvwColumnSorter = new ListViewColumnSorter();
+                    this.listViewDocs.ListViewItemSorter = lvwColumnSorter;
 
-                dbm = new dbManager(noecw.Path);
-                editable = false;
+                    dbm = new dbManager(noecw.Path);
+                    editable = false;
 
-                this.selectedFileType = dbm.getSelectedFileTypeExtensions();
+                    this.selectedFileType = dbm.getSelectedFileTypeExtensions();
 
-                treeViewDirs.SelectedNode = treeViewDirs.Nodes[0];
-                listViewRefresh();
-                generateCustomVDirs();
-                refreshTags();
-                refreshAuthors();
+                    treeViewDirs.SelectedNode = treeViewDirs.Nodes[0];
+                    listViewRefresh();
+                    generateCustomVDirs();
+                    refreshTags();
+                    refreshAuthors();
+                }
+                catch(SQLiteException sqle) {
+                    MessageBox.Show(sqle.Message);
+                    initializeProgramStartup();
+                }
+                catch(Exception e){
+                    MessageBox.Show(e.Message);
+                    initializeProgramStartup();
+                }
             }
         }
 
