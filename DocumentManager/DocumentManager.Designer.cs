@@ -400,6 +400,7 @@
             this.textBoxNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxNotes.Size = new System.Drawing.Size(278, 373);
             this.textBoxNotes.TabIndex = 13;
+            this.textBoxNotes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxNotes_KeyDown);
             // 
             // Details
             // 

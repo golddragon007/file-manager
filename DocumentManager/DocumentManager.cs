@@ -1022,6 +1022,13 @@ namespace DocumentManager
                 buttonEdit.PerformClick();
                 textBoxTitle.Focus();
             }
+            else if (e.KeyCode == Keys.N && e.Control && e.Shift)
+            {
+                tabControl1.SelectedIndex = 0;
+                buttonEdit.PerformClick();
+                tabControl1.SelectedIndex = 1;
+                textBoxNotes.Focus();
+            }
         }
 
         private void treeViewDirs_KeyDown(object sender, KeyEventArgs e)
@@ -1063,8 +1070,17 @@ namespace DocumentManager
 
         private void textBoxTitle_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyData == Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
+                buttonEdit.PerformClick();
+            }
+        }
+
+        private void textBoxNotes_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter && e.Control)
+            {
+                tabControl1.SelectedIndex = 0;
                 buttonEdit.PerformClick();
             }
         }
