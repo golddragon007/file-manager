@@ -162,6 +162,7 @@
             | System.Windows.Forms.Keys.D)));
             this.addDictionaryToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
             this.addDictionaryToolStripMenuItem.Text = "Add Folder";
+            this.addDictionaryToolStripMenuItem.Click += new System.EventHandler(this.buttonAddDictionary_Click);
             // 
             // toolStripSeparator4
             // 

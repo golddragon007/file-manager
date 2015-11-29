@@ -679,26 +679,32 @@ namespace DocumentManager
 
         private void buttonEdit_Click(object sender, EventArgs e)
         {
-            if (editable)
+            if (displayedFile != null)
             {
-                setEditable(false);
-                displayedFile.Title = textBoxTitle.Text;
-                displayedFile.Author = textBoxAuthor.Text;
-                displayedFile.Year = textBoxYear.Text;
-                displayedFile.Doi = textBoxDOI.Text;
-                displayedFile.Tags = textBoxTags.Text;
-                displayedFile.Note = textBoxNotes.Text;
-                displayedFile.Favorite = checkBoxFavourite.Checked;
-                dbm.saveModifiedFileRecords(displayedFile);
-                listViewRefresh();
-                refreshTags();
-                refreshAuthors();
+                if (editable)
+                {
+                    setEditable(false);
+                    displayedFile.Title = textBoxTitle.Text;
+                    displayedFile.Author = textBoxAuthor.Text;
+                    displayedFile.Year = textBoxYear.Text;
+                    displayedFile.Doi = textBoxDOI.Text;
+                    displayedFile.Tags = textBoxTags.Text;
+                    displayedFile.Note = textBoxNotes.Text;
+                    displayedFile.Favorite = checkBoxFavourite.Checked;
+                    dbm.saveModifiedFileRecords(displayedFile);
+                    listViewRefresh();
+                    refreshTags();
+                    refreshAuthors();
+                }
+                else
+                {
+                    setEditable(true);
+                } 
             }
             else
             {
-                setEditable(true);
+                MessageBox.Show("Please select a file first!");
             }
-
         }
 
         /// <summary>
