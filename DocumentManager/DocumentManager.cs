@@ -683,18 +683,26 @@ namespace DocumentManager
             {
                 if (editable)
                 {
-                    setEditable(false);
-                    displayedFile.Title = textBoxTitle.Text;
-                    displayedFile.Author = textBoxAuthor.Text;
-                    displayedFile.Year = textBoxYear.Text;
-                    displayedFile.Doi = textBoxDOI.Text;
-                    displayedFile.Tags = textBoxTags.Text;
-                    displayedFile.Note = textBoxNotes.Text;
-                    displayedFile.Favorite = checkBoxFavourite.Checked;
-                    dbm.saveModifiedFileRecords(displayedFile);
-                    listViewRefresh();
-                    refreshTags();
-                    refreshAuthors();
+                    int year;
+                    if ((textBoxYear.Text != "") && !(Int32.TryParse(textBoxYear.Text, out year)))
+                    {
+                        MessageBox.Show("Year must be Integer.");
+                    }
+                    else
+                    {
+                        setEditable(false);
+                        displayedFile.Title = textBoxTitle.Text;
+                        displayedFile.Author = textBoxAuthor.Text;
+                        displayedFile.Year = textBoxYear.Text;
+                        displayedFile.Doi = textBoxDOI.Text;
+                        displayedFile.Tags = textBoxTags.Text;
+                        displayedFile.Note = textBoxNotes.Text;
+                        displayedFile.Favorite = checkBoxFavourite.Checked;
+                        dbm.saveModifiedFileRecords(displayedFile);
+                        listViewRefresh();
+                        refreshTags();
+                        refreshAuthors();
+                    }
                 }
                 else
                 {

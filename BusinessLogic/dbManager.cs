@@ -985,14 +985,26 @@ END ORDER BY author", dbConnection);
                                     );", dbConnection);
                 sqlcd.ExecuteNonQuery();
 
-                SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET title = $title, author = $author, year = $year, doi = $doi, favorite = $favorite WHERE id = $id", dbConnection);
-                sqlc.Parameters.AddWithValue("$id", fi.Id);
-                sqlc.Parameters.AddWithValue("$title", fi.Title);
-                sqlc.Parameters.AddWithValue("$author", fi.Author);
-                sqlc.Parameters.AddWithValue("$year", fi.Year);
-                sqlc.Parameters.AddWithValue("$doi", fi.Doi);
-                sqlc.Parameters.AddWithValue("$favorite", fi.Favorite);
-                sqlc.ExecuteNonQuery();
+                if (fi.Year == "") {
+                    SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET title = $title, author = $author, year = null, doi = $doi, favorite = $favorite WHERE id = $id", dbConnection);
+                    sqlc.Parameters.AddWithValue("$id", fi.Id);
+                    sqlc.Parameters.AddWithValue("$title", fi.Title);
+                    sqlc.Parameters.AddWithValue("$author", fi.Author);
+                    sqlc.Parameters.AddWithValue("$doi", fi.Doi);
+                    sqlc.Parameters.AddWithValue("$favorite", fi.Favorite);
+                    sqlc.ExecuteNonQuery();
+                }
+                else
+                {
+                    SQLiteCommand sqlc = new SQLiteCommand(@"UPDATE files SET title = $title, author = $author, year = $year, doi = $doi, favorite = $favorite WHERE id = $id", dbConnection);
+                    sqlc.Parameters.AddWithValue("$id", fi.Id);
+                    sqlc.Parameters.AddWithValue("$title", fi.Title);
+                    sqlc.Parameters.AddWithValue("$author", fi.Author);
+                    sqlc.Parameters.AddWithValue("$year", fi.Year);
+                    sqlc.Parameters.AddWithValue("$doi", fi.Doi);
+                    sqlc.Parameters.AddWithValue("$favorite", fi.Favorite);
+                    sqlc.ExecuteNonQuery();
+                }
 
                 transaction.Commit();
             }
