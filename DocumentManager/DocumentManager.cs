@@ -1013,6 +1013,15 @@ namespace DocumentManager
             {
                 openToolStripMenuItem.PerformClick();
             }
+            else if (e.KeyCode == Keys.M && e.Control)
+            {
+                buttonMove.PerformClick();
+            }
+            else if (e.KeyCode == Keys.E && e.Control)
+            {
+                buttonEdit.PerformClick();
+                textBoxTitle.Focus();
+            }
         }
 
         private void treeViewDirs_KeyDown(object sender, KeyEventArgs e)
@@ -1050,6 +1059,14 @@ namespace DocumentManager
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void textBoxTitle_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Enter)
+            {
+                buttonEdit.PerformClick();
+            }
         }
     }
 }

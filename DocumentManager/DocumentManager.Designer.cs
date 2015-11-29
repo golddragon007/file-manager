@@ -185,7 +185,7 @@
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+            this.settingsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
@@ -462,6 +462,7 @@
             this.textBoxTags.ReadOnly = true;
             this.textBoxTags.Size = new System.Drawing.Size(207, 20);
             this.textBoxTags.TabIndex = 11;
+            this.textBoxTags.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxTitle_KeyDown);
             // 
             // labelTags
             // 
@@ -545,6 +546,7 @@
             this.textBoxDOI.ReadOnly = true;
             this.textBoxDOI.Size = new System.Drawing.Size(207, 20);
             this.textBoxDOI.TabIndex = 10;
+            this.textBoxDOI.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxTitle_KeyDown);
             // 
             // textBoxYear
             // 
@@ -553,6 +555,7 @@
             this.textBoxYear.ReadOnly = true;
             this.textBoxYear.Size = new System.Drawing.Size(207, 20);
             this.textBoxYear.TabIndex = 9;
+            this.textBoxYear.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxTitle_KeyDown);
             // 
             // textBoxAuthor
             // 
@@ -561,6 +564,7 @@
             this.textBoxAuthor.ReadOnly = true;
             this.textBoxAuthor.Size = new System.Drawing.Size(207, 20);
             this.textBoxAuthor.TabIndex = 8;
+            this.textBoxAuthor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxTitle_KeyDown);
             // 
             // textBoxTitle
             // 
@@ -569,6 +573,7 @@
             this.textBoxTitle.ReadOnly = true;
             this.textBoxTitle.Size = new System.Drawing.Size(207, 20);
             this.textBoxTitle.TabIndex = 7;
+            this.textBoxTitle.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxTitle_KeyDown);
             // 
             // labelDOI
             // 
